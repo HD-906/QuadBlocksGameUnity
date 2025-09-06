@@ -1,0 +1,140 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+public class GameManager : MonoBehaviour
+{
+    [SerializeField] private List<GameObject> currentBag = new List<GameObject>();
+    [SerializeField] private GameObject[] tetrominoPrefabs;
+    [SerializeField] public static Transform[,] grid;
+    [SerializeField] public static bool isGameOver = false;
+
+    private Vector2 spawnPosition = new Vector2(4, 18);
+
+    public const int width = 10;
+    public const int height = 25;
+
+    void Start()
+    {
+        grid = new Transform[width, height];
+        FillBag();
+        SpawnNextTetromino();
+    }
+
+    private void FillBag()
+    {
+        currentBag = new List<GameObject>(tetrominoPrefabs);
+        for (int i = 0; i < currentBag.Count; i++) // Fisher–Yates Shuffle
+        {
+            int randomIndex = Random.Range(i, currentBag.Count);
+            (currentBag[i], currentBag[randomIndex]) = (currentBag[randomIndex], currentBag[i]);
+        }
+    }
+
+    public void SpawnNextTetromino()
+    {
+        if (isGameOver)
+            return;
+
+        if (currentBag.Count == 0)
+            FillBag();
+
+        GameObject next = currentBag[0];
+        currentBag.RemoveAt(0);
+
+        GameObject newMino = Instantiate(next, spawnPosition, Quaternion.identity);
+        Tetromino tetroScript = newMino.GetComponent<Tetromino>();
+
+        int tryCount = 0;
+        while (!tetroScript.IsValidMove())
+        {
+            if (tryCount >= 2)
+            {
+                GameOver();
+            }
+            newMino.transform.position += Vector3.up;
+            tryCount++;
+            Debug.Log($"tried {tryCount} times");
+        }
+        Debug.Log($"tried {tryCount + 1} times finally");
+    }
+    public int ClearFullLines()
+    {
+        int cleared = 0;
+        int upperBound = height;
+        List<int> toClearList = new List<int>();
+        for (int y = 0; y < height; y++)
+        {
+            
+            bool full = true;
+            bool empty = true;
+            for (int x = 0; x < width; x++)
+            {
+                if (grid[x, y] == null)
+                {
+                    full = false;
+                    if (!empty) break;
+                }
+                else
+                {
+                    empty = false;
+                    if (!full) break;
+                }
+            }
+
+            if (empty)
+            {
+                upperBound = y;
+                break;
+            }
+
+            if (full)
+            {
+                toClearList.Add(y);
+                cleared++;
+            }
+        }
+
+        if (cleared == 0)
+        {
+            return 0;
+        }
+
+        int yToFill = toClearList[0];
+        int yFiller = yToFill + 1;
+
+        for (int y = yToFill; y < upperBound; y++)
+        {
+            while (toClearList.Contains(yFiller))
+            {
+                if (yFiller < upperBound)
+                {
+                    yFiller++;
+                }
+            }
+
+            for (int x = 0; x < width; x++)
+            {
+                Destroy(grid[x, y]?.gameObject);
+                grid[x, y] = grid[x, yFiller];
+                grid[x, yFiller] = null;
+                if (grid[x, y] != null)
+                {
+                    grid[x, y].position += Vector3.down * (yFiller - y);
+                }
+            }
+
+            if (yFiller < upperBound)
+            {
+                yFiller++;
+            }
+        }
+        return cleared;
+    }
+
+    public void GameOver()
+    {
+        Debug.Log("GAME OVER!");
+        Time.timeScale = 0f;
+        isGameOver = true;
+    }
+}

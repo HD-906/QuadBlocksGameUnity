@@ -1,0 +1,303 @@
+using UnityEngine;
+using System.Collections.Generic;
+
+public class Tetromino : MonoBehaviour
+{
+    float fallTime = 2f;
+    float previousTime;
+    int orient = 0;
+    public GameObject blockPrefab;
+
+    public enum TetrominoType
+    {
+        I, O, T, J, L, S, Z
+    }
+
+    private List<Vector2Int> RotationListA = new List<Vector2Int> {
+        new (0, 0), new (-1, 0), new (-1, 1), new (0, -2), new (-1, -2)
+    };
+
+    private List<Vector2Int> RotationListB = new List<Vector2Int> {
+        new (0, 0), new (1, 0), new (1, -1), new (0, 2), new (1, 2)
+    };
+
+    private List<Vector2Int> RotationListC = new List<Vector2Int> {
+        new (0, 0), new (1, 0), new (1, 1), new (0, -2), new (1, -2)
+    };
+
+    private List<Vector2Int> RotationListD = new List<Vector2Int> {
+        new (0, 0), new (-1, 0), new (-1, -1), new (0, 2), new (-1, 2)
+    };
+
+    private List<Vector2Int> RotationListIA = new List<Vector2Int> {
+        new (1, 0), new (-1, 0), new (2, 0), new (-1, -1), new (2, 2)
+    };
+
+    private List<Vector2Int> RotationListIB = new List<Vector2Int> {
+        new (-1, 0), new (1, 0), new (-2, 0), new (1, 1), new (-2, -2)
+    };
+
+    private List<Vector2Int> RotationListIC = new List<Vector2Int> {
+        new (0, -1), new (-1, -1), new (2, -1), new (-1, 1), new (2, -2)
+    };
+
+    private List<Vector2Int> RotationListID = new List<Vector2Int> {
+        new (0, 1), new (1, 1), new (-2, 1), new (1, -1), new (-2, 2)
+    };
+
+    //public enum TetrominoRotation
+    //    {
+    //        '01', '10', '12', '21', '23', '32', '30', '03'
+    //    }
+
+    public TetrominoType type;
+
+    GameManager gameManager;
+
+    void Start()
+    {
+        previousTime = Time.time;
+        gameManager = FindFirstObjectByType<GameManager>();
+        Debug.Log("This tetromino is: " + type);
+    }
+
+    void Update()
+    {
+        if (GameManager.isGameOver)
+            return;
+
+        if (Time.time - previousTime > fallTime)
+        {
+            transform.position += Vector3.down;
+            if (!IsValidMove())
+            {
+                transform.position += Vector3.up;
+                LockTetromino();
+            }
+            previousTime = Time.time;
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftArrow)) // shift left
+        {
+            bool ground = CheckGround();
+            bool moved = Move(Vector3.left);
+            if (moved && (ground || CheckGround()))
+                previousTime = Time.time;
+        }
+
+        if (Input.GetKeyDown(KeyCode.RightArrow)) // shift right
+        {
+            bool ground = CheckGround();
+            bool moved = Move(Vector3.right);
+            if (moved && (ground || CheckGround()))
+                previousTime = Time.time;
+        }
+
+        if (Input.GetKeyDown(KeyCode.A)) // rotate left
+        {
+            bool rotated = Rotate(1);
+            if (rotated)
+                previousTime = Time.time;
+        }
+
+        if (Input.GetKeyDown(KeyCode.S)) // rotate right
+        {
+            bool rotated = Rotate(-1);
+            if (rotated)
+                previousTime = Time.time;
+        }
+
+        if (Input.GetKeyDown(KeyCode.DownArrow)) // softdrop
+        {
+            bool moved = Move(Vector3.down);
+            if (moved)
+                previousTime = Time.time;
+        }
+
+        if (Input.GetKeyDown(KeyCode.UpArrow)) // harddrop
+        {
+            bool moved = true;
+            while (moved)
+                moved = Move(Vector3.down);
+            LockTetromino();
+        }
+    }
+
+    bool CheckGround()
+    {
+        transform.position += Vector3.down;
+        bool ground = !IsValidMove();
+        transform.position -= Vector3.down;
+        return ground;
+    }
+
+    bool Move(Vector3 direction)
+    {
+        transform.position += direction;
+        if (!IsValidMove())
+        {
+            transform.position -= direction;
+            return false;
+        }
+        return true;
+    }
+
+    bool Rotate(int dir)
+    {
+        if (type == TetrominoType.O)
+            return true;
+
+        Vector2 originalPosition = transform.position;
+        transform.Rotate(0, 0, 90 * dir);
+        int nextOrient = (orient - dir + 4) % 4;
+        List<Vector2Int> selectedList;
+
+        if (type == TetrominoType.I)
+        {
+            if (orient + nextOrient == 3)
+            {
+                if (nextOrient >= 2)
+                {
+                    selectedList = RotationListIC;
+                }
+                else
+                {
+                    selectedList = RotationListID;
+                }
+            }
+            else
+            {
+                if (nextOrient == 1 || nextOrient == 2)
+                {
+                    selectedList = RotationListIA;
+                }
+                else
+                {
+                    selectedList = RotationListIB;
+                }
+            }
+        }
+        else
+        {
+            if (orient % 2 == 0)
+            {
+                if (nextOrient == 1)
+                {
+                    selectedList = RotationListA;
+                }
+                else
+                {
+                    selectedList = RotationListC;
+                }
+            }
+            else
+            {
+                if (orient == 1)
+                {
+                    selectedList = RotationListB;
+                }
+                else
+                {
+                    selectedList = RotationListD;
+                }
+            }
+        }
+
+        Debug.Log($"Attempt change from {orient} to {nextOrient}");
+
+        foreach (var offset in selectedList)
+        {
+            transform.position = originalPosition + offset.ToVector2();
+
+            if (IsValidMove())
+            {
+                orient = nextOrient;
+                Debug.Log($"Success, Orient now: {orient}");
+                Debug.Log($"Offset Used: {offset}");
+                return true;
+            }
+
+            Debug.Log($"This offset Failed: {offset}");
+        }
+
+        transform.position = originalPosition;
+        transform.Rotate(0, 0, -90 * dir);
+        Debug.Log($"Failed, Orient now: {orient}");
+        return false;
+    }
+
+    void LockTetromino()
+    {
+        AddToGrid();
+        int linesCleared = gameManager.ClearFullLines();
+        gameManager.SpawnNextTetromino();
+        enabled = false;
+    }
+
+    public bool IsValidMove()
+    {
+        foreach (Transform block in transform)
+        {
+            Vector2 pos = Round(block.position);
+            if (!InsideGrid(pos))
+                return false;
+
+            if (GameManager.grid[(int)pos.x, (int)pos.y] != null)
+                return false;
+        }
+        return true;
+    }
+
+    Vector2 Round(Vector2 pos)
+    {
+        return new Vector2(Mathf.Round(pos.x), Mathf.Round(pos.y));
+    }
+
+    bool InsideGrid(Vector2 pos)
+    {
+        return ((int)pos.x >= 0 && (int)pos.x < GameManager.width && 
+                (int)pos.y >= 0 && (int)pos.y < GameManager.height);
+    }
+
+    void AddToGrid()
+    {
+        bool overflow = true;
+        if (blockPrefab == null)
+        {
+            Debug.LogError("blockPrefab is not assigned in Tetromino!");
+            return;
+        }
+
+        foreach (Transform child in transform)
+        {
+            Vector2Int pos = Vector2Int.RoundToInt(child.position);
+            GameObject block = Instantiate(blockPrefab, pos.ToVector2(), Quaternion.identity);
+
+            // Render colour to match the original block
+            SpriteRenderer originalSR = child.GetComponent<SpriteRenderer>();
+            SpriteRenderer newSR = block.GetComponent<SpriteRenderer>();
+            if (originalSR != null && newSR != null)
+                newSR.color = originalSR.color;
+
+            GameManager.grid[pos.x, pos.y] = block.transform;
+
+            if (pos.y <= 19)
+                overflow = false;
+        }
+
+        if (overflow)
+        {
+            FindFirstObjectByType<GameManager>().GameOver();
+        }
+
+        Destroy(gameObject);
+    }
+}
+
+public static class VectorExtensions
+{
+    public static Vector2 ToVector2(this Vector2Int v)
+    {
+        return new Vector2(v.x, v.y);
+    }
+}

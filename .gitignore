@@ -1,0 +1,10 @@
+Library/
+.vs/TetrisUnity/
+Temp/
+UserSettings/
+Logs/
+obj/
+.vsconfig
+Assembly-CSharp.csproj
+TetrisUnity.sln
+UpgradeLog.htm
