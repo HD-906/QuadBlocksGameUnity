@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 349935949074720195}
   - component: {fileID: 312809191070244209}
+  - component: {fileID: -1281986520859561048}
   m_Layer: 0
   m_Name: T_Tetromino
   m_TagString: Untagged
@@ -50,6 +51,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blockPrefab: {fileID: 5492220890843784036, guid: d10c36893f4601142a04c3fc9d15a109, type: 3}
   type: 2
+--- !u!114 &-1281986520859561048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 874779809270162426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ddc2895b4c46c8449f0ca3544cb8677, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fallTime: 2
 --- !u!1001 &5236257146729867579
 PrefabInstance:
   m_ObjectHideFlags: 0

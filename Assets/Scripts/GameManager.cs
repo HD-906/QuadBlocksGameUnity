@@ -42,7 +42,15 @@ public class GameManager : MonoBehaviour
         currentBag.RemoveAt(0);
 
         GameObject newMino = Instantiate(next, spawnPosition, Quaternion.identity);
+        newMino.GetComponent<Tetromino>().gameManager = this;
+
         Tetromino tetroScript = newMino.GetComponent<Tetromino>();
+
+        var logic = newMino.GetComponent<InFieldLogic>();
+        if (logic != null)
+        {
+            logic.enabled = true;
+        }
 
         int tryCount = 0;
         while (!tetroScript.IsValidMove())
@@ -53,9 +61,7 @@ public class GameManager : MonoBehaviour
             }
             newMino.transform.position += Vector3.up;
             tryCount++;
-            Debug.Log($"tried {tryCount} times");
         }
-        Debug.Log($"tried {tryCount + 1} times finally");
     }
     public int ClearFullLines()
     {

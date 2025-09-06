@@ -3,8 +3,6 @@ using System.Collections.Generic;
 
 public class Tetromino : MonoBehaviour
 {
-    float fallTime = 2f;
-    float previousTime;
     int orient = 0;
     public GameObject blockPrefab;
 
@@ -13,117 +11,43 @@ public class Tetromino : MonoBehaviour
         I, O, T, J, L, S, Z
     }
 
-    private List<Vector2Int> RotationListA = new List<Vector2Int> {
+    public TetrominoType type;
+
+    private List<Vector2Int> RotationListA = new() {
         new (0, 0), new (-1, 0), new (-1, 1), new (0, -2), new (-1, -2)
     };
 
-    private List<Vector2Int> RotationListB = new List<Vector2Int> {
+    private List<Vector2Int> RotationListB = new() {
         new (0, 0), new (1, 0), new (1, -1), new (0, 2), new (1, 2)
     };
 
-    private List<Vector2Int> RotationListC = new List<Vector2Int> {
+    private List<Vector2Int> RotationListC = new() {
         new (0, 0), new (1, 0), new (1, 1), new (0, -2), new (1, -2)
     };
 
-    private List<Vector2Int> RotationListD = new List<Vector2Int> {
+    private List<Vector2Int> RotationListD = new() {
         new (0, 0), new (-1, 0), new (-1, -1), new (0, 2), new (-1, 2)
     };
 
-    private List<Vector2Int> RotationListIA = new List<Vector2Int> {
+    private List<Vector2Int> RotationListIA = new() {
         new (1, 0), new (-1, 0), new (2, 0), new (-1, -1), new (2, 2)
     };
 
-    private List<Vector2Int> RotationListIB = new List<Vector2Int> {
+    private List<Vector2Int> RotationListIB = new() {
         new (-1, 0), new (1, 0), new (-2, 0), new (1, 1), new (-2, -2)
     };
 
-    private List<Vector2Int> RotationListIC = new List<Vector2Int> {
+    private List<Vector2Int> RotationListIC = new() {
         new (0, -1), new (-1, -1), new (2, -1), new (-1, 1), new (2, -2)
     };
 
-    private List<Vector2Int> RotationListID = new List<Vector2Int> {
+    private List<Vector2Int> RotationListID = new() {
         new (0, 1), new (1, 1), new (-2, 1), new (1, -1), new (-2, 2)
     };
 
-    //public enum TetrominoRotation
-    //    {
-    //        '01', '10', '12', '21', '23', '32', '30', '03'
-    //    }
+    public GameManager gameManager; 
 
-    public TetrominoType type;
-
-    GameManager gameManager;
-
-    void Start()
-    {
-        previousTime = Time.time;
-        gameManager = FindFirstObjectByType<GameManager>();
-        Debug.Log("This tetromino is: " + type);
-    }
-
-    void Update()
-    {
-        if (GameManager.isGameOver)
-            return;
-
-        if (Time.time - previousTime > fallTime)
-        {
-            transform.position += Vector3.down;
-            if (!IsValidMove())
-            {
-                transform.position += Vector3.up;
-                LockTetromino();
-            }
-            previousTime = Time.time;
-        }
-
-        if (Input.GetKeyDown(KeyCode.LeftArrow)) // shift left
-        {
-            bool ground = CheckGround();
-            bool moved = Move(Vector3.left);
-            if (moved && (ground || CheckGround()))
-                previousTime = Time.time;
-        }
-
-        if (Input.GetKeyDown(KeyCode.RightArrow)) // shift right
-        {
-            bool ground = CheckGround();
-            bool moved = Move(Vector3.right);
-            if (moved && (ground || CheckGround()))
-                previousTime = Time.time;
-        }
-
-        if (Input.GetKeyDown(KeyCode.A)) // rotate left
-        {
-            bool rotated = Rotate(1);
-            if (rotated)
-                previousTime = Time.time;
-        }
-
-        if (Input.GetKeyDown(KeyCode.S)) // rotate right
-        {
-            bool rotated = Rotate(-1);
-            if (rotated)
-                previousTime = Time.time;
-        }
-
-        if (Input.GetKeyDown(KeyCode.DownArrow)) // softdrop
-        {
-            bool moved = Move(Vector3.down);
-            if (moved)
-                previousTime = Time.time;
-        }
-
-        if (Input.GetKeyDown(KeyCode.UpArrow)) // harddrop
-        {
-            bool moved = true;
-            while (moved)
-                moved = Move(Vector3.down);
-            LockTetromino();
-        }
-    }
-
-    bool CheckGround()
+    public bool CheckGround()
     {
         transform.position += Vector3.down;
         bool ground = !IsValidMove();
@@ -131,7 +55,7 @@ public class Tetromino : MonoBehaviour
         return ground;
     }
 
-    bool Move(Vector3 direction)
+    public bool Move(Vector3 direction)
     {
         transform.position += direction;
         if (!IsValidMove())
@@ -142,7 +66,7 @@ public class Tetromino : MonoBehaviour
         return true;
     }
 
-    bool Rotate(int dir)
+    public bool Rotate(int dir)
     {
         if (type == TetrominoType.O)
             return true;
@@ -203,8 +127,6 @@ public class Tetromino : MonoBehaviour
             }
         }
 
-        Debug.Log($"Attempt change from {orient} to {nextOrient}");
-
         foreach (var offset in selectedList)
         {
             transform.position = originalPosition + offset.ToVector2();
@@ -212,21 +134,31 @@ public class Tetromino : MonoBehaviour
             if (IsValidMove())
             {
                 orient = nextOrient;
-                Debug.Log($"Success, Orient now: {orient}");
-                Debug.Log($"Offset Used: {offset}");
                 return true;
             }
-
-            Debug.Log($"This offset Failed: {offset}");
         }
 
         transform.position = originalPosition;
         transform.Rotate(0, 0, -90 * dir);
-        Debug.Log($"Failed, Orient now: {orient}");
         return false;
     }
 
-    void LockTetromino()
+    public void HardDropAndLock()
+    {
+        bool moved = true;
+        while (moved)
+        {
+            moved = Move(Vector3.down);
+        }
+        LockTetromino();
+    }
+    public void LockIfPossible()
+    {
+        if (!Move(Vector3.down))
+            LockTetromino();
+    }
+
+    private void LockTetromino()
     {
         AddToGrid();
         int linesCleared = gameManager.ClearFullLines();
@@ -240,10 +172,14 @@ public class Tetromino : MonoBehaviour
         {
             Vector2 pos = Round(block.position);
             if (!InsideGrid(pos))
+            {
                 return false;
+            }
 
             if (GameManager.grid[(int)pos.x, (int)pos.y] != null)
-                return false;
+            {
+                return false; 
+            }
         }
         return true;
     }
@@ -277,12 +213,16 @@ public class Tetromino : MonoBehaviour
             SpriteRenderer originalSR = child.GetComponent<SpriteRenderer>();
             SpriteRenderer newSR = block.GetComponent<SpriteRenderer>();
             if (originalSR != null && newSR != null)
+            {
                 newSR.color = originalSR.color;
+            }
 
             GameManager.grid[pos.x, pos.y] = block.transform;
 
             if (pos.y <= 19)
+            {
                 overflow = false;
+            }
         }
 
         if (overflow)
