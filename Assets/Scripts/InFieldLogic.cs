@@ -82,5 +82,11 @@ public class InFieldLogic : MonoBehaviour
         {
             tetr.HardDropAndLock();
         }
+
+        // hold
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            tetr.Hold();
+        }
     }
 }

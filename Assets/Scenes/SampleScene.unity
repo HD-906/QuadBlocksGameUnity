@@ -150,13 +150,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentBag: []
   tetrominoPrefabs:
-  - {fileID: 874779809270162426, guid: 330ca0b1d1b4a4a48ac37f3c066eb3fa, type: 3}
-  - {fileID: 5047097834062816240, guid: a74a87468d98cc5499cb4a6c583a70a6, type: 3}
   - {fileID: 699103551059599147, guid: 73ea363115c30d94f8be22fc593f352a, type: 3}
-  - {fileID: 8551439121295924820, guid: 06a62944c2248174397753829edea69a, type: 3}
-  - {fileID: 5424429675894832584, guid: c7f9ae65644067d4fb4b5367e80c479b, type: 3}
-  - {fileID: 7930991983558934840, guid: e750e89b6a0132d40a132e18d5cc9b14, type: 3}
   - {fileID: 7674831821473798502, guid: dab065e49628da847abc40b71572854d, type: 3}
+  - {fileID: 7930991983558934840, guid: e750e89b6a0132d40a132e18d5cc9b14, type: 3}
+  - {fileID: 5047097834062816240, guid: a74a87468d98cc5499cb4a6c583a70a6, type: 3}
+  - {fileID: 8551439121295924820, guid: 06a62944c2248174397753829edea69a, type: 3}
+  - {fileID: 874779809270162426, guid: 330ca0b1d1b4a4a48ac37f3c066eb3fa, type: 3}
+  - {fileID: 5424429675894832584, guid: c7f9ae65644067d4fb4b5367e80c479b, type: 3}
+  current: {fileID: 0}
+  onHold: {fileID: 0}
+  holdLocked: 0
 --- !u!4 &140510702
 Transform:
   m_ObjectHideFlags: 0

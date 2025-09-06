@@ -5,6 +5,9 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private List<GameObject> currentBag = new List<GameObject>();
     [SerializeField] private GameObject[] tetrominoPrefabs;
+    [SerializeField] private GameObject current;
+    [SerializeField] private GameObject onHold;
+    [SerializeField] public bool holdLocked = false;
     [SerializeField] public static Transform[,] grid;
     [SerializeField] public static bool isGameOver = false;
 
@@ -31,18 +34,9 @@ public class GameManager : MonoBehaviour
         currentBag.AddRange(tempBag);
     }
 
-    public void SpawnNextTetromino()
+    private void InstantiateNewMino(GameObject prefabObj)
     {
-        if (isGameOver)
-            return;
-
-        if (currentBag.Count < 7)
-            FillBag();
-
-        GameObject next = currentBag[0];
-        currentBag.RemoveAt(0);
-
-        GameObject newMino = Instantiate(next, spawnPosition, Quaternion.identity);
+        GameObject newMino = Instantiate(prefabObj, spawnPosition, Quaternion.identity);
         newMino.GetComponent<Tetromino>().gameManager = this;
 
         Tetromino tetroScript = newMino.GetComponent<Tetromino>();
@@ -64,6 +58,45 @@ public class GameManager : MonoBehaviour
             tryCount++;
         }
     }
+
+    public void SpawnNextTetromino()
+    {
+        holdLocked = false;
+
+        if (isGameOver)
+            return;
+
+        if (currentBag.Count < 7)
+            FillBag();
+
+        current = currentBag[0];
+        currentBag.RemoveAt(0);
+
+        InstantiateNewMino(current);
+    }
+
+    public bool HoldCurrent()
+    {
+        if (holdLocked)
+        {
+            return false;
+        }
+
+        if (onHold == null)
+        {
+            onHold = current;
+            SpawnNextTetromino();
+        }
+        else
+        {
+            (current, onHold) = (onHold, current);
+            InstantiateNewMino(current);
+        }
+
+        holdLocked = true;
+        return true;
+    }
+
     public int ClearFullLines()
     {
         int cleared = 0;

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Net;
 
 public class Tetromino : MonoBehaviour
 {
@@ -164,6 +165,15 @@ public class Tetromino : MonoBehaviour
         int linesCleared = gameManager.ClearFullLines();
         gameManager.SpawnNextTetromino();
         enabled = false;
+    }
+
+    public void Hold()
+    {
+        bool holdSuccess = gameManager.HoldCurrent();
+        if (holdSuccess)
+        {
+            Destroy(gameObject);
+        }
     }
 
     public bool IsValidMove()
