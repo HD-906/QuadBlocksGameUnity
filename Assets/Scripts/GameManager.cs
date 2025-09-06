@@ -22,12 +22,13 @@ public class GameManager : MonoBehaviour
 
     private void FillBag()
     {
-        currentBag = new List<GameObject>(tetrominoPrefabs);
-        for (int i = 0; i < currentBag.Count; i++) // Fisher–Yates Shuffle
+        List<GameObject> tempBag = new List<GameObject>(tetrominoPrefabs);
+        for (int i = 0; i < tempBag.Count; i++) // Fisher–Yates Shuffle
         {
-            int randomIndex = Random.Range(i, currentBag.Count);
-            (currentBag[i], currentBag[randomIndex]) = (currentBag[randomIndex], currentBag[i]);
+            int randomIndex = Random.Range(i, tempBag.Count);
+            (tempBag[i], tempBag[randomIndex]) = (tempBag[randomIndex], tempBag[i]);
         }
+        currentBag.AddRange(tempBag);
     }
 
     public void SpawnNextTetromino()
@@ -35,7 +36,7 @@ public class GameManager : MonoBehaviour
         if (isGameOver)
             return;
 
-        if (currentBag.Count == 0)
+        if (currentBag.Count < 7)
             FillBag();
 
         GameObject next = currentBag[0];
