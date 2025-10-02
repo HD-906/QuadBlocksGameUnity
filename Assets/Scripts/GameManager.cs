@@ -10,8 +10,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] public bool holdLocked = false;
     [SerializeField] public static Transform[,] grid;
     [SerializeField] public static bool isGameOver = false;
+    [SerializeField] private PreviewController preview;
 
-    private Vector2 spawnPosition = new Vector2(4, 18);
+    private Vector3 spawnPosition = new Vector3(4, 18, 1);
 
     public const int width = 10;
     public const int height = 25;
@@ -21,6 +22,8 @@ public class GameManager : MonoBehaviour
         grid = new Transform[width, height];
         FillBag();
         SpawnNextTetromino();
+        preview.ShowNext(currentBag);
+        preview.ShowHold(onHold);
     }
 
     private void FillBag()
@@ -72,6 +75,8 @@ public class GameManager : MonoBehaviour
         current = currentBag[0];
         currentBag.RemoveAt(0);
 
+        preview.ShowNext(currentBag);
+
         InstantiateNewMino(current);
     }
 
@@ -94,6 +99,7 @@ public class GameManager : MonoBehaviour
         }
 
         holdLocked = true;
+        preview.ShowHold(onHold);
         return true;
     }
 
