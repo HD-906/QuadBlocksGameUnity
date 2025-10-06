@@ -6,7 +6,6 @@ public class GameConfig : ScriptableObject
     public GameMode mode = GameMode.Classic;
 
     [Header("Gameplay")]
-    public int sprintLines = 40;
     public float gravitySecs = 1.0f;
 
     [Header("Audio")]

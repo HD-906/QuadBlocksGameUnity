@@ -153,13 +153,8 @@ public class Tetromino : MonoBehaviour
         }
         LockTetromino();
     }
-    public void LockIfPossible()
-    {
-        if (!Move(Vector3.down))
-            LockTetromino();
-    }
 
-    private void LockTetromino()
+    public void LockTetromino()
     {
         AddToGrid();
         int linesCleared = gameManager.ClearFullLines();
