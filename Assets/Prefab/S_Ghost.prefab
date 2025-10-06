@@ -9,11 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 751849204141589786}
-  - component: {fileID: -6661250791273097542}
-  - component: {fileID: -2106541808126023004}
   - component: {fileID: 8680653329630736299}
   m_Layer: 0
-  m_Name: S_Tetromino
+  m_Name: S_Ghost
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -38,35 +36,6 @@ Transform:
   - {fileID: 8881775994232844128}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-6661250791273097542
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8551439121295924820}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0e86686c6ec87143a30a2052347c409, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  blockPrefab: {fileID: 5492220890843784036, guid: d10c36893f4601142a04c3fc9d15a109, type: 3}
-  type: 5
-  gameManager: {fileID: 0}
---- !u!114 &-2106541808126023004
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8551439121295924820}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ddc2895b4c46c8449f0ca3544cb8677, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fallTime: 2
-  ghostPrefab: {fileID: 8551439121295924820, guid: 9e5eedaf1e827dd42982188dff27cc84, type: 3}
 --- !u!114 &8680653329630736299
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -87,6 +56,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 751849204141589786}
     m_Modifications:
+    - target: {fileID: 2674926447347272362, guid: d10c36893f4601142a04c3fc9d15a109, type: 3}
+      propertyPath: m_Color.a
+      value: 0.13725491
+      objectReference: {fileID: 0}
     - target: {fileID: 2674926447347272362, guid: d10c36893f4601142a04c3fc9d15a109, type: 3}
       propertyPath: m_Color.b
       value: 0.36078432
@@ -162,6 +135,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 751849204141589786}
     m_Modifications:
     - target: {fileID: 2674926447347272362, guid: d10c36893f4601142a04c3fc9d15a109, type: 3}
+      propertyPath: m_Color.a
+      value: 0.13725491
+      objectReference: {fileID: 0}
+    - target: {fileID: 2674926447347272362, guid: d10c36893f4601142a04c3fc9d15a109, type: 3}
       propertyPath: m_Color.b
       value: 0.36078432
       objectReference: {fileID: 0}
@@ -235,6 +212,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 751849204141589786}
     m_Modifications:
+    - target: {fileID: 2674926447347272362, guid: d10c36893f4601142a04c3fc9d15a109, type: 3}
+      propertyPath: m_Color.a
+      value: 0.13725491
+      objectReference: {fileID: 0}
     - target: {fileID: 2674926447347272362, guid: d10c36893f4601142a04c3fc9d15a109, type: 3}
       propertyPath: m_Color.b
       value: 0.36078432
@@ -310,16 +291,20 @@ PrefabInstance:
     m_TransformParent: {fileID: 751849204141589786}
     m_Modifications:
     - target: {fileID: 2674926447347272362, guid: d10c36893f4601142a04c3fc9d15a109, type: 3}
+      propertyPath: m_Color.a
+      value: 0.13725491
+      objectReference: {fileID: 0}
+    - target: {fileID: 2674926447347272362, guid: d10c36893f4601142a04c3fc9d15a109, type: 3}
       propertyPath: m_Color.b
       value: 0.36078432
       objectReference: {fileID: 0}
     - target: {fileID: 2674926447347272362, guid: d10c36893f4601142a04c3fc9d15a109, type: 3}
       propertyPath: m_Color.g
-      value: 0.77647066
+      value: 0.7764706
       objectReference: {fileID: 0}
     - target: {fileID: 2674926447347272362, guid: d10c36893f4601142a04c3fc9d15a109, type: 3}
       propertyPath: m_Color.r
-      value: 0.40000004
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 5492220890843784036, guid: d10c36893f4601142a04c3fc9d15a109, type: 3}
       propertyPath: m_Name

@@ -4,6 +4,10 @@ using UnityEngine;
 public class InFieldLogic : MonoBehaviour
 {
     [SerializeField] float fallTime = 2f;
+    [SerializeField] private GameObject ghostPrefab;
+    private GameObject ghostGO;
+    private GhostPiece ghost;
+
     float previousTime;
     Tetromino tetr;
 
@@ -20,6 +24,12 @@ public class InFieldLogic : MonoBehaviour
     void OnEnable()
     {
         previousTime = Time.time;
+        CreateGhost();
+    }
+
+    void OnDisable()
+    {
+        DestroyGhost();
     }
 
     void Update()
@@ -88,5 +98,27 @@ public class InFieldLogic : MonoBehaviour
         {
             tetr.Hold();
         }
+    }
+
+    void CreateGhost()
+    {
+        if (ghostPrefab == null || ghostGO != null)
+        {
+            return;
+        }
+
+        ghostGO = Instantiate(ghostPrefab, transform.position, transform.rotation);
+        ghost = ghostGO.GetComponent<GhostPiece>();
+        if (ghost != null) ghost.Initialize(tetr);
+    }
+
+    void DestroyGhost()
+    {
+        if (ghostGO != null) 
+        {
+            Destroy(ghostGO);
+        }
+        ghostGO = null;
+        ghost = null;
     }
 }
