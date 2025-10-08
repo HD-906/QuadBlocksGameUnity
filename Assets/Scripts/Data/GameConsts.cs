@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public static class GameConsts
 {
     public const int GridWidth = 10;

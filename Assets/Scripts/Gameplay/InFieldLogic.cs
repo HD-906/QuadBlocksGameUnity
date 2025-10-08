@@ -4,12 +4,23 @@ using UnityEngine;
 public class InFieldLogic : MonoBehaviour
 {
     [SerializeField] private GameObject ghostPrefab;
-    private float multiplier = 1f;
+    private float multiplier;
+    private float gravity;
+    private float arr;
+    private float das;
+    private float dcd;
+    private int sdf;
+    private bool dasTriggeredLeft = false;
+    private bool dasTriggeredRight = false;
     private float fallTime = 0.5f;
     private GameObject ghostGO;
     private GhostPiece ghost;
 
     private float previousTime;
+    private float previousLeftDownTime;
+    private float previousRightDownTime;
+    private float previousLeftArrTime;
+    private float previousRightArrTime;
     private int lowestY = 25;
     private int movementCount = 0;
     Tetromino tetr;
@@ -22,6 +33,25 @@ public class InFieldLogic : MonoBehaviour
     void Awake()
     {
         tetr = GetComponent<Tetromino>();
+    }
+
+    void Start()
+    {
+        var cfg = Bootstrap.I.config;
+
+        gravity = cfg.gravity;
+        arr = cfg.arr;
+        das = cfg.das;
+        dcd = cfg.dcd;
+        sdf = cfg.sdf;
+
+        previousTime = -1;
+        previousLeftDownTime = -1;
+        previousRightDownTime = -1;
+        previousLeftArrTime = -1;
+        previousRightArrTime = -1;
+
+        multiplier = gravity;
     }
 
     void OnEnable()
@@ -44,14 +74,19 @@ public class InFieldLogic : MonoBehaviour
 
         if (Input.GetKey(KeyCode.DownArrow))
         {
-            multiplier = 20f;
+            multiplier = gravity * sdf;
         }
         else
         {
-            multiplier = 1f;
+            multiplier = gravity;
         }
 
         //gravity
+        if (previousTime < 0)
+        {
+            previousTime = Time.time;
+        }
+
         float deltaTime = Time.time - previousTime;
         if (deltaTime > fallTime / multiplier)
         {
@@ -72,18 +107,16 @@ public class InFieldLogic : MonoBehaviour
         }
 
         // shift left
-        if (Input.GetKeyDown(KeyCode.LeftArrow)) 
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            bool moved = tetr.Move(Vector3.left);
-            if (moved)
-            {
-                PostActions();
-            }
+            previousLeftDownTime = Time.time;
+            MoveHorizontal(Vector3.left);
         }
 
         // shift right
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
+            previousRightDownTime = Time.time;
             bool moved = tetr.Move(Vector3.right);
             if (moved)
             {
@@ -122,17 +155,56 @@ public class InFieldLogic : MonoBehaviour
         {
             tetr.Hold();
         }
+
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            if (previousLeftDownTime < 0) // To Avoid Unexpected bug
+            {
+                previousLeftDownTime = Time.time;
+            }
+
+            if (previousLeftArrTime < 0) // To Avoid Unexpected bug
+            {
+                previousLeftArrTime = Time.time;
+            }
+
+            float deltaLeftTime = Time.time - previousLeftDownTime;
+            if (deltaLeftTime > das)
+            {
+                if (!dasTriggeredLeft)
+                {
+                    MoveHorizontal(Vector3.left);
+                    dasTriggeredLeft = true;
+                    previousLeftArrTime = Time.time;
+                }
+                else if (Time.time - previousLeftArrTime > arr)
+                {
+                    MoveHorizontal(Vector3.left);
+                    previousLeftArrTime = Time.time;
+                }
+            }
+        }
+
+        if (Input.GetKeyUp(KeyCode.LeftArrow))
+        {
+            previousLeftDownTime = -1;
+            previousLeftArrTime = -1;
+            dasTriggeredLeft = false;
+        }
+
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+
+        }
     }
 
-    private bool PostActions()
+    private void MoveHorizontal(Vector3 v)
     {
-        movementCount++;
-        bool grounded = tetr.CheckGround();
-        if (grounded)
+        bool moved = tetr.Move(v);
+        if (moved)
         {
-            previousTime = Time.time;
+            PostActions();
         }
-        return grounded;
     }
 
     private void PostRotations()
@@ -147,6 +219,17 @@ public class InFieldLogic : MonoBehaviour
         {
             tetr.LockTetromino();
         }
+    }
+
+    private bool PostActions()
+    {
+        movementCount++;
+        bool grounded = tetr.CheckGround();
+        if (grounded)
+        {
+            previousTime = Time.time;
+        }
+        return grounded;
     }
 
     void CreateGhost()

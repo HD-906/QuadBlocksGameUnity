@@ -7,7 +7,7 @@ public class Bootstrap : MonoBehaviour
         get; 
         private set; 
     }
-    [SerializeField] public GameConfig config;
+    public GameConfig config;
 
     void Awake()
     {
