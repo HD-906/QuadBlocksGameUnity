@@ -68,7 +68,6 @@ public class InFieldLogic : MonoBehaviour
 
     void OnDisable()
     {
-        //gameManager.UpdateLastMovementStatus(cancelLeft, cancelRight);
         DestroyGhost();
     }
 
@@ -88,7 +87,6 @@ public class InFieldLogic : MonoBehaviour
             multiplier = gravity;
         }
 
-        //gravity
         if (previousTime < 0)
         {
             previousTime = Time.time;
@@ -108,6 +106,7 @@ public class InFieldLogic : MonoBehaviour
             }
             else if (deltaTime > fallTime)
             {
+                gameManager.UpdateLastMovementStatus(cancelLeft, cancelRight);
                 tetr.LockTetromino();
                 previousTime = Time.time;
             }
@@ -148,7 +147,6 @@ public class InFieldLogic : MonoBehaviour
             cancelRight
         );
 
-        // rotate left
         if (Input.GetKeyDown(KeyCode.A))
         {
             bool rotated = tetr.Rotate(1);
@@ -158,7 +156,6 @@ public class InFieldLogic : MonoBehaviour
             }
         }
 
-        // rotate right
         if (Input.GetKeyDown(KeyCode.S))
         {
             bool rotated = tetr.Rotate(-1);
@@ -168,15 +165,15 @@ public class InFieldLogic : MonoBehaviour
             }
         }
 
-        // harddrop
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
+            gameManager.UpdateLastMovementStatus(cancelLeft, cancelRight);
             tetr.HardDropAndLock();
         }
 
-        // hold
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            gameManager.UpdateLastMovementStatus(cancelLeft, cancelRight);
             tetr.Hold();
         }
     }
