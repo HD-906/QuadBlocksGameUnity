@@ -12,6 +12,8 @@ public class GameConfig : ScriptableObject
     public float dcd = 1.0f;
     public int sdf = 6;
 
+    public float frameRate = 60f;
+
     [Header("Audio")]
     [Range(0f, 1f)] public float masterVolume = 1f;
 }

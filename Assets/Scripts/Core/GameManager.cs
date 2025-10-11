@@ -17,6 +17,8 @@ public class GameManager : MonoBehaviour
     public const int width = 10;
     public const int height = 25;
 
+    private bool[] lastPieceMovementStatus = { false, false };
+
     void Start()
     {
         grid = new Transform[width, height];
@@ -48,6 +50,8 @@ public class GameManager : MonoBehaviour
         if (logic != null)
         {
             logic.enabled = true;
+            logic.gameManager = this;
+            logic.SetStatus(lastPieceMovementStatus[0], lastPieceMovementStatus[1]);
         }
 
         int tryCount = 0;
@@ -101,6 +105,12 @@ public class GameManager : MonoBehaviour
         holdLocked = true;
         preview.ShowHold(onHold);
         return true;
+    }
+
+    public void UpdateLastMovementStatus(bool statusLeft, bool statusRight)
+    {
+        lastPieceMovementStatus[0] = statusLeft;
+        lastPieceMovementStatus[1] = statusRight;
     }
 
     public int ClearFullLines()

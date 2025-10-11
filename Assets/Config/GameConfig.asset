@@ -15,7 +15,8 @@ MonoBehaviour:
   mode: 0
   gravity: 1
   arr: 2
-  das: 10
+  das: 50
   dcd: 1
   sdf: 6
+  frameRate: 60
   masterVolume: 1

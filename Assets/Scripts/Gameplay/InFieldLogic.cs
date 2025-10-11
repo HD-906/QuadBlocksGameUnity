@@ -10,8 +10,13 @@ public class InFieldLogic : MonoBehaviour
     private float das;
     private float dcd;
     private int sdf;
+
     private bool dasTriggeredLeft = false;
     private bool dasTriggeredRight = false;
+    private bool cancelLeft = false;
+    private bool cancelRight = false;
+    private bool firstLeftDown = false;
+    private bool firstRightDown = false;
     private float fallTime = 0.5f;
     private GameObject ghostGO;
     private GhostPiece ghost;
@@ -24,6 +29,8 @@ public class InFieldLogic : MonoBehaviour
     private int lowestY = 25;
     private int movementCount = 0;
     Tetromino tetr;
+
+    public GameManager gameManager;
 
     public enum TetrominoType
     {
@@ -40,9 +47,9 @@ public class InFieldLogic : MonoBehaviour
         var cfg = Bootstrap.I.config;
 
         gravity = cfg.gravity;
-        arr = cfg.arr;
-        das = cfg.das;
-        dcd = cfg.dcd;
+        arr = cfg.arr / cfg.frameRate;
+        das = cfg.das / cfg.frameRate;
+        dcd = cfg.dcd / cfg.frameRate;
         sdf = cfg.sdf;
 
         previousTime = -1;
@@ -56,12 +63,12 @@ public class InFieldLogic : MonoBehaviour
 
     void OnEnable()
     {
-        previousTime = Time.time;
         CreateGhost();
     }
 
     void OnDisable()
     {
+        gameManager.UpdateLastMovementStatus(cancelLeft, cancelRight);
         DestroyGhost();
     }
 
@@ -106,23 +113,42 @@ public class InFieldLogic : MonoBehaviour
             }
         }
 
-        // shift left
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        if (!(Input.GetKey(KeyCode.LeftArrow) && Input.GetKey(KeyCode.RightArrow)))
         {
-            previousLeftDownTime = Time.time;
-            MoveHorizontal(Vector3.left);
+            cancelLeft = cancelRight = false;
+        }
+        else if (Input.GetKeyDown(KeyCode.LeftArrow) && Input.GetKey(KeyCode.RightArrow))
+        {
+            cancelLeft = false;
+            cancelRight = true;
+        }
+        else if (Input.GetKey(KeyCode.LeftArrow) && Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            cancelLeft = true;
+            cancelRight = false;
         }
 
-        // shift right
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            previousRightDownTime = Time.time;
-            bool moved = tetr.Move(Vector3.right);
-            if (moved)
-            {
-                PostActions();
-            }
-        }
+        HandleHorizontalArr
+            (
+                KeyCode.LeftArrow,
+                ref previousLeftDownTime,
+                ref previousLeftArrTime,
+                ref dasTriggeredLeft,
+                ref firstLeftDown,
+                Vector3.left,
+                cancelLeft
+            );
+
+        HandleHorizontalArr
+        (
+            KeyCode.RightArrow,
+            ref previousRightDownTime, 
+            ref previousRightArrTime, 
+            ref dasTriggeredRight, 
+            ref firstRightDown,
+            Vector3.right,
+            cancelRight
+        );
 
         // rotate left
         if (Input.GetKeyDown(KeyCode.A))
@@ -155,46 +181,57 @@ public class InFieldLogic : MonoBehaviour
         {
             tetr.Hold();
         }
+    }
 
-        if (Input.GetKey(KeyCode.LeftArrow))
+    private void HandleHorizontalArr(KeyCode key, ref float previousDownTime, ref float previousArrTime, ref bool dasTriggered, ref bool firstDown, Vector3 v, bool cancel)
+    {
+        if (Input.GetKeyDown(key))
         {
-            if (previousLeftDownTime < 0) // To Avoid Unexpected bug
+            previousDownTime = Time.time;
+            MoveHorizontal(v);
+            firstDown = true;
+        }
+
+        if (Input.GetKey(key))
+        {
+            if (previousDownTime < 0) // To Avoid Unexpected bug
             {
-                previousLeftDownTime = Time.time;
+                previousDownTime = Time.time;
             }
 
-            if (previousLeftArrTime < 0) // To Avoid Unexpected bug
+            if (previousArrTime < 0) // To Avoid Unexpected bug
             {
-                previousLeftArrTime = Time.time;
+                previousArrTime = Time.time;
             }
 
-            float deltaLeftTime = Time.time - previousLeftDownTime;
-            if (deltaLeftTime > das)
+            float deltaTime = Time.time - previousDownTime;
+            if (deltaTime > (firstDown ? das : dcd))
             {
-                if (!dasTriggeredLeft)
+                if (!dasTriggered)
                 {
-                    MoveHorizontal(Vector3.left);
-                    dasTriggeredLeft = true;
-                    previousLeftArrTime = Time.time;
+                    if (!cancel)
+                    {
+                        MoveHorizontal(v);
+                    }
+                    dasTriggered = true;
+                    previousArrTime = Time.time;
                 }
-                else if (Time.time - previousLeftArrTime > arr)
+                else if (Time.time - previousArrTime > arr)
                 {
-                    MoveHorizontal(Vector3.left);
-                    previousLeftArrTime = Time.time;
+                    if (!cancel)
+                    {
+                        MoveHorizontal(v);
+                    }
+                    previousArrTime = Time.time;
                 }
             }
         }
 
-        if (Input.GetKeyUp(KeyCode.LeftArrow))
+        if (Input.GetKeyUp(key))
         {
-            previousLeftDownTime = -1;
-            previousLeftArrTime = -1;
-            dasTriggeredLeft = false;
-        }
-
-        if (Input.GetKey(KeyCode.RightArrow))
-        {
-
+            previousDownTime = -1;
+            previousArrTime = -1;
+            dasTriggered = false;
         }
     }
 
@@ -230,6 +267,12 @@ public class InFieldLogic : MonoBehaviour
             previousTime = Time.time;
         }
         return grounded;
+    }
+
+    public void SetStatus(bool statusLeft, bool statusRight)
+    {
+        cancelLeft = statusLeft;
+        cancelRight = statusRight;
     }
 
     void CreateGhost()
