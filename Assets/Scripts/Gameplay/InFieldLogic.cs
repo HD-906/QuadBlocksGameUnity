@@ -21,11 +21,11 @@ public class InFieldLogic : MonoBehaviour
     private GameObject ghostGO;
     private GhostPiece ghost;
 
-    private float previousTime;
-    private float previousLeftDownTime;
-    private float previousRightDownTime;
-    private float previousLeftArrTime;
-    private float previousRightArrTime;
+    private float previousTime = -1;
+    private float previousLeftDownTime = -1;
+    private float previousRightDownTime = -1;
+    private float previousLeftArrTime = -1;
+    private float previousRightArrTime = -1;
     private int lowestY = 25;
     private int movementCount = 0;
     Tetromino tetr;
@@ -51,12 +51,6 @@ public class InFieldLogic : MonoBehaviour
         das = cfg.das / cfg.frameRate;
         dcd = cfg.dcd / cfg.frameRate;
         sdf = cfg.sdf;
-
-        previousTime = -1;
-        previousLeftDownTime = -1;
-        previousRightDownTime = -1;
-        previousLeftArrTime = -1;
-        previousRightArrTime = -1;
 
         multiplier = gravity;
     }

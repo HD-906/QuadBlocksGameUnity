@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -18,6 +19,7 @@ public class GameManager : MonoBehaviour
     public const int height = 25;
 
     private bool[] lastPieceMovementStatus = { false, false };
+    private float previousRTime;
 
     void Start()
     {
@@ -26,6 +28,19 @@ public class GameManager : MonoBehaviour
         SpawnNextTetromino();
         preview.ShowNext(currentBag);
         preview.ShowHold(onHold);
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            previousRTime = Time.time;
+        }
+
+        if (Input.GetKey(KeyCode.R) && Time.time - previousRTime > 2)
+        {
+            RestartGame();
+        }
     }
 
     private void FillBag()
@@ -106,8 +121,6 @@ public class GameManager : MonoBehaviour
         preview.ShowHold(onHold);
         return true;
     }
-
-    public void DoNothing() { }
 
     public void UpdateLastMovementStatus(bool statusLeft, bool statusRight)
     {
@@ -194,5 +207,11 @@ public class GameManager : MonoBehaviour
         Debug.Log("GAME OVER!");
         Time.timeScale = 0f;
         isGameOver = true;
+    }
+
+    public void RestartGame()
+    {
+        Scene current = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(current.name);
     }
 }
