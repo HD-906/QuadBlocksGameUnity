@@ -68,7 +68,7 @@ public class InFieldLogic : MonoBehaviour
 
     void OnDisable()
     {
-        gameManager.UpdateLastMovementStatus(cancelLeft, cancelRight);
+        //gameManager.UpdateLastMovementStatus(cancelLeft, cancelRight);
         DestroyGhost();
     }
 
@@ -115,17 +115,15 @@ public class InFieldLogic : MonoBehaviour
 
         if (!(Input.GetKey(KeyCode.LeftArrow) && Input.GetKey(KeyCode.RightArrow)))
         {
-            cancelLeft = cancelRight = false;
+            SetCancelStatus(false, false);
         }
         else if (Input.GetKeyDown(KeyCode.LeftArrow) && Input.GetKey(KeyCode.RightArrow))
         {
-            cancelLeft = false;
-            cancelRight = true;
+            SetCancelStatus(false, true);
         }
         else if (Input.GetKey(KeyCode.LeftArrow) && Input.GetKeyDown(KeyCode.RightArrow))
         {
-            cancelLeft = true;
-            cancelRight = false;
+            SetCancelStatus(true, false);
         }
 
         HandleHorizontalArr
@@ -269,7 +267,7 @@ public class InFieldLogic : MonoBehaviour
         return grounded;
     }
 
-    public void SetStatus(bool statusLeft, bool statusRight)
+    public void SetCancelStatus(bool statusLeft, bool statusRight)
     {
         cancelLeft = statusLeft;
         cancelRight = statusRight;
