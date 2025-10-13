@@ -77,15 +77,14 @@ public class MainMenuController : MonoBehaviour
 
         buttons[3].gameObject.SetActive(true);
 
-        Set(0, "Sprint", () => StartMode("Game_Sprint"));
-        Set(1, "Bliz", () => StartMode("Game_Bliz"));
-        Set(2, "Endless", () => StartMode("Game_Endless"));
+        Set(0, "Sprint", () => StartMode(SceneNames.PlayfieldSingle, "Game_S_Sprint"));
+        Set(1, "Bliz", () => StartMode(SceneNames.PlayfieldSingle, "Game_S_Bliz"));
+        Set(2, "Endless", () => StartMode(SceneNames.PlayfieldSingle, "Game_S_Endless"));
         Set(3, "Custom", OnCustom);
 
         if (Bootstrap.I)
         {
             Bootstrap.I.nextMenuPage = MenuPage.SinglePlayer;
-            Debug.Log("Set to sp");
         }
 
         backButton.gameObject.SetActive(true);
@@ -94,11 +93,19 @@ public class MainMenuController : MonoBehaviour
     // --------------- Callbacks -------------------
     void ShowMultiPlayer()
     {
+        ClearAll();
+
+        buttons[2].gameObject.SetActive(true);
+
+        Set(0, "Classic", () => StartMode(SceneNames.PlayfieldMulti, "Game_M_Classic"));
+        Set(1, "Modern", () => StartMode(SceneNames.PlayfieldMulti, "Game_M_Modern"));
+
         if (Bootstrap.I)
         {
             Bootstrap.I.nextMenuPage = MenuPage.MultiPlayer;
-            Debug.Log("Set to mp");
         }
+
+        backButton.gameObject.SetActive(true);
     }
 
     void ShowConfig()
@@ -108,7 +115,6 @@ public class MainMenuController : MonoBehaviour
         if (Bootstrap.I)
         {
             Bootstrap.I.nextMenuPage = MenuPage.Settings;
-            Debug.Log("Set to s");
         }
     }
 
@@ -117,9 +123,10 @@ public class MainMenuController : MonoBehaviour
         Debug.Log("Custom clicked");
     }
 
-    void StartMode(string sceneName)
+    void StartMode(string scene, string sceneName)
     {
-        SceneManager.LoadScene(SceneNames.PlayfieldSingle);
+        SceneManager.LoadScene(scene);
+        Debug.Log(sceneName);
     }
 
     // --------------- Helpers ---------------------

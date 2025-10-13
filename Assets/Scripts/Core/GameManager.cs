@@ -9,14 +9,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject current;
     [SerializeField] private GameObject onHold;
     [SerializeField] public bool holdLocked = false;
-    [SerializeField] public static Transform[,] grid;
+    [SerializeField] public Transform[,] grid;
     [SerializeField] public static bool isGameOver = false;
     [SerializeField] private PreviewController preview;
 
-    private Vector3 spawnPosition = new Vector3(4, 18, 1);
+    private Vector2 spawnPosition = GameConsts.SpawnCell;
 
-    public const int width = 10;
-    public const int height = 25;
+    public const int width = GameConsts.GridWidth;
+    public const int height = GameConsts.GridHeight;
 
     private bool[] lastPieceMovementStatus = { false, false };
     private float holdTime = GameConsts.holdTime;
@@ -79,9 +79,9 @@ public class GameManager : MonoBehaviour
         var logic = newMino.GetComponent<InFieldLogic>();
         if (logic != null)
         {
-            logic.enabled = true;
             logic.gameManager = this;
             logic.SetCancelStatus(lastPieceMovementStatus[0], lastPieceMovementStatus[1]);
+            logic.enabled = true;
         }
 
         int tryCount = 0;

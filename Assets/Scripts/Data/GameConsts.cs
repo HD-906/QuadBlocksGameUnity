@@ -3,7 +3,7 @@ using UnityEngine;
 public static class GameConsts
 {
     public const int GridWidth = 10;
-    public const int GridHeight = 24;
+    public const int GridHeight = 25;
     public static readonly Vector2Int SpawnCell = new(4, 18);
 
     public const int sprintLines = 40;

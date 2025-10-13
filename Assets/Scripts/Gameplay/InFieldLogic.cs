@@ -289,7 +289,10 @@ public class InFieldLogic : MonoBehaviour
 
         ghostGO = Instantiate(ghostPrefab, transform.position, transform.rotation);
         ghost = ghostGO.GetComponent<GhostPiece>();
-        if (ghost != null) ghost.Initialize(tetr);
+        if (ghost != null)
+        {
+            ghost.Init(gameManager, tetr);
+        }
     }
 
     void DestroyGhost()

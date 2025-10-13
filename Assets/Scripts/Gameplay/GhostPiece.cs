@@ -4,9 +4,11 @@ using UnityEngine;
 public class GhostPiece : MonoBehaviour
 {
     private Tetromino target;
+    public GameManager gameManager;
 
-    public void Initialize(Tetromino tetromino)
+    public void Init(GameManager manager, Tetromino tetromino)
     {
+        gameManager = manager;
         target = tetromino;
     }
 
@@ -31,7 +33,7 @@ public class GhostPiece : MonoBehaviour
         foreach (Transform block in transform)
         {
             Vector2 pos = Round(block.position + direction);
-            if (!InsideGrid(pos) || GameManager.grid[(int)pos.x, (int)pos.y] != null)
+            if (!InsideGrid(pos) || gameManager.grid[(int)pos.x, (int)pos.y] != null)
             {
                 return false;
             }

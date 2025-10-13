@@ -60,13 +60,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 699103551059599147}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9ddc2895b4c46c8449f0ca3544cb8677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fallTime: 2
   ghostPrefab: {fileID: 699103551059599147, guid: 49ea87624ec9a8e488e398f22018cec6, type: 3}
+  gameManager: {fileID: 0}
 --- !u!114 &2632431234602304272
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -79,6 +79,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60492fefd51add446aba1b169f7eb662, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameManager: {fileID: 0}
 --- !u!1001 &720450352166925785
 PrefabInstance:
   m_ObjectHideFlags: 0

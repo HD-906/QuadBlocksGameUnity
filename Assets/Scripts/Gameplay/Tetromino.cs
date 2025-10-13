@@ -181,7 +181,7 @@ public class Tetromino : MonoBehaviour
                 return false;
             }
 
-            if (GameManager.grid[(int)pos.x, (int)pos.y] != null)
+            if (gameManager.grid[(int)pos.x, (int)pos.y] != null)
             {
                 return false; 
             }
@@ -222,7 +222,7 @@ public class Tetromino : MonoBehaviour
                 newSR.color = originalSR.color;
             }
 
-            GameManager.grid[pos.x, pos.y] = block.transform;
+            gameManager.grid[pos.x, pos.y] = block.transform;
 
             if (pos.y <= 19)
             {
