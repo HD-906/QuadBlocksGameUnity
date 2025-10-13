@@ -11,6 +11,14 @@ public class InFieldLogic : MonoBehaviour
     private float dcd;
     private int sdf;
 
+    private KeyCode moveLeft;
+    private KeyCode moveRight;
+    private KeyCode softDrop;
+    private KeyCode hardDrop;
+    private KeyCode rotateRight;
+    private KeyCode rotateLeft;
+    private KeyCode hold;
+
     private bool dasTriggeredLeft = false;
     private bool dasTriggeredRight = false;
     private bool cancelLeft = false;
@@ -53,6 +61,14 @@ public class InFieldLogic : MonoBehaviour
         sdf = cfg.sdf;
 
         multiplier = gravity;
+
+        moveLeft = cfg.moveLeft;
+        moveRight = cfg.moveRight;
+        softDrop = cfg.softDrop;
+        hardDrop = cfg.hardDrop;
+        rotateRight = cfg.rotateRight;
+        rotateLeft = cfg.rotateLeft;
+        hold = cfg.hold;
     }
 
     void OnEnable()
@@ -72,7 +88,7 @@ public class InFieldLogic : MonoBehaviour
             return;
         }
 
-        if (Input.GetKey(KeyCode.DownArrow))
+        if (Input.GetKey(softDrop))
         {
             multiplier = gravity * sdf;
         }
@@ -106,33 +122,33 @@ public class InFieldLogic : MonoBehaviour
             }
         }
 
-        if (!(Input.GetKey(KeyCode.LeftArrow) && Input.GetKey(KeyCode.RightArrow)))
+        if (!(Input.GetKey(moveLeft) && Input.GetKey(moveRight)))
         {
             SetCancelStatus(false, false);
         }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow) && Input.GetKey(KeyCode.RightArrow))
+        else if (Input.GetKeyDown(moveLeft) && Input.GetKey(moveRight))
         {
             SetCancelStatus(false, true);
         }
-        else if (Input.GetKey(KeyCode.LeftArrow) && Input.GetKeyDown(KeyCode.RightArrow))
+        else if (Input.GetKey(moveLeft) && Input.GetKeyDown(moveRight))
         {
             SetCancelStatus(true, false);
         }
 
         HandleHorizontalArr
-            (
-                KeyCode.LeftArrow,
-                ref previousLeftDownTime,
-                ref previousLeftArrTime,
-                ref dasTriggeredLeft,
-                ref firstLeftDown,
-                Vector3.left,
-                cancelLeft
-            );
+        (
+            moveLeft,
+            ref previousLeftDownTime,
+            ref previousLeftArrTime,
+            ref dasTriggeredLeft,
+            ref firstLeftDown,
+            Vector3.left,
+            cancelLeft
+        );
 
         HandleHorizontalArr
         (
-            KeyCode.RightArrow,
+            moveRight,
             ref previousRightDownTime, 
             ref previousRightArrTime, 
             ref dasTriggeredRight, 
@@ -141,7 +157,7 @@ public class InFieldLogic : MonoBehaviour
             cancelRight
         );
 
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(rotateLeft))
         {
             bool rotated = tetr.Rotate(1);
             if (rotated)
@@ -150,7 +166,7 @@ public class InFieldLogic : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Input.GetKeyDown(rotateRight))
         {
             bool rotated = tetr.Rotate(-1);
             if (rotated)
@@ -159,13 +175,13 @@ public class InFieldLogic : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        if (Input.GetKeyDown(hardDrop))
         {
             gameManager.UpdateLastMovementStatus(cancelLeft, cancelRight);
             tetr.HardDropAndLock();
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(hold))
         {
             gameManager.UpdateLastMovementStatus(cancelLeft, cancelRight);
             tetr.Hold();

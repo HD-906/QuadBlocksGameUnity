@@ -1,5 +1,10 @@
 using UnityEngine;
 
+public enum MenuPage
+{
+    Root, SinglePlayer, MultiPlayer, Settings 
+}
+
 public class Bootstrap : MonoBehaviour
 {
     public static Bootstrap I 
@@ -8,6 +13,7 @@ public class Bootstrap : MonoBehaviour
         private set; 
     }
     public GameConfig config;
+    public MenuPage nextMenuPage = MenuPage.Root;
 
     void Awake()
     {

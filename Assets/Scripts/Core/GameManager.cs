@@ -19,7 +19,12 @@ public class GameManager : MonoBehaviour
     public const int height = 25;
 
     private bool[] lastPieceMovementStatus = { false, false };
+    private float holdTime = GameConsts.holdTime;
+
     private float previousRTime;
+    private float previousFTime;
+    private KeyCode restart;
+    private KeyCode forfeit;
 
     void Start()
     {
@@ -28,18 +33,28 @@ public class GameManager : MonoBehaviour
         SpawnNextTetromino();
         preview.ShowNext(currentBag);
         preview.ShowHold(onHold);
+
+        restart = Bootstrap.I.config.restart;
+        forfeit = Bootstrap.I.config.forfeit;
+        Debug.Log("GM started");
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.R))
+        ExecuteWhenHeld(restart, ref previousRTime, RestartGame);
+        ExecuteWhenHeld(forfeit, ref previousFTime, ForfeitGame);
+    }
+
+    private void ExecuteWhenHeld(KeyCode key, ref float previousTime, System.Action act)
+    {
+        if (Input.GetKeyDown(key))
         {
-            previousRTime = Time.time;
+            previousTime = Time.time;
         }
 
-        if (Input.GetKey(KeyCode.R) && Time.time - previousRTime > 2)
+        if (Input.GetKey(key) && Time.time - previousTime > holdTime)
         {
-            RestartGame();
+            act();
         }
     }
 
@@ -213,5 +228,10 @@ public class GameManager : MonoBehaviour
     {
         Scene current = SceneManager.GetActiveScene();
         SceneManager.LoadScene(current.name);
+    }
+
+    public void ForfeitGame()
+    {
+        SceneManager.LoadScene(SceneNames.MainMenu);
     }
 }

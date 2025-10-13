@@ -9,4 +9,15 @@ public static class GameConsts
     public const int sprintLines = 40;
     public const float softdropSpeed = 20f;
     public const int maxDelayMovement = 15;
+
+    // defaults
+
+    public const float gravity = 1.0f;
+    public const float arr = 2.0f;
+    public const float das = 10.0f;
+    public const float dcd = 1.0f;
+    public const int sdf = 6;
+    public const float frameRate = 60f;
+
+    public const float holdTime = 2f;
 }

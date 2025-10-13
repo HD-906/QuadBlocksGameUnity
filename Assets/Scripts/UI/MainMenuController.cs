@@ -1,20 +1,54 @@
-using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using UnityEngine;
 using UnityEngine.SceneManagement;
-using Unity.VisualScripting;
+using UnityEngine.UI;
 
 public class MainMenuController : MonoBehaviour
 {
     [Header("Buttons in display order (top to bottom)")]
     [SerializeField] private Button[] buttons; // size = 4
     [SerializeField] private Button backButton;
+
+    private bool escLock = false;
     
     void Start()
     {
-        ShowMain();
+        var target = Bootstrap.I ? Bootstrap.I.nextMenuPage : MenuPage.Root;
+
+        switch (target)
+        {
+            case MenuPage.SinglePlayer:
+                ShowSinglePlayer();
+                escLock = true;
+                break;
+            case MenuPage.MultiPlayer:
+                ShowMultiPlayer();
+                escLock = true;
+                break;
+            case MenuPage.Settings:
+                ShowConfig();
+                escLock = true;
+                break;
+            case MenuPage.Root: // falls down to default
+            default:
+                ShowMain();
+                break;
+        }
+
         backButton.onClick.AddListener(ShowMain);
-        backButton.gameObject.SetActive(false); // hidden on root menu
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape) && !escLock)
+        {
+            ShowMain();
+        }
+
+        if (Input.GetKeyUp(KeyCode.Escape))
+        {
+            escLock = false;
+        }
     }
 
     // ---------------- Main Screen ----------------
@@ -23,11 +57,17 @@ public class MainMenuController : MonoBehaviour
         ClearAll();
 
         Set(0, "Single Player", ShowSinglePlayer);
-        Set(1, "Multi Player",  OnMultiPlayer);
-        Set(2, "Config",        OnConfig);
+        Set(1, "Multi Player",  ShowMultiPlayer);
+        Set(2, "Config",        ShowConfig);
         buttons[3].gameObject.SetActive(false);
 
         backButton.gameObject.SetActive(false);
+
+        if (Bootstrap.I)
+        {
+            Bootstrap.I.nextMenuPage = MenuPage.Root;
+            Debug.Log("Set to root");
+        }
     }
 
     // --------------- Single Player ---------------
@@ -42,19 +82,34 @@ public class MainMenuController : MonoBehaviour
         Set(2, "Endless", () => StartMode("Game_Endless"));
         Set(3, "Custom", OnCustom);
 
+        if (Bootstrap.I)
+        {
+            Bootstrap.I.nextMenuPage = MenuPage.SinglePlayer;
+            Debug.Log("Set to sp");
+        }
+
         backButton.gameObject.SetActive(true);
     }
 
     // --------------- Callbacks -------------------
-    void OnMultiPlayer()
+    void ShowMultiPlayer()
     {
-        Debug.Log("MultiPlayer");
+        if (Bootstrap.I)
+        {
+            Bootstrap.I.nextMenuPage = MenuPage.MultiPlayer;
+            Debug.Log("Set to mp");
+        }
     }
 
-    void OnConfig()
+    void ShowConfig()
     {
         // SceneManager.LoadScene("Settings");
-        Debug.Log("Settings");
+
+        if (Bootstrap.I)
+        {
+            Bootstrap.I.nextMenuPage = MenuPage.Settings;
+            Debug.Log("Set to s");
+        }
     }
 
     void OnCustom()
@@ -64,20 +119,17 @@ public class MainMenuController : MonoBehaviour
 
     void StartMode(string sceneName)
     {
-        // If you use Bootstrap/GameConfig, set mode here before loading.
-        // Bootstrap.I.config.mode = GameMode.Sprint; etc.
         SceneManager.LoadScene(SceneNames.PlayfieldSingle);
-        Debug.Log($"StartMode: {sceneName}");
     }
 
     // --------------- Helpers ---------------------
-    void Set(int index, string label, UnityEngine.Events.UnityAction onClick)
+    void Set(int index, string label, UnityEngine.Events.UnityAction onClickAction)
     {
         var btn = buttons[index];
         btn.gameObject.SetActive(true);
 
         btn.onClick.RemoveAllListeners();
-        btn.onClick.AddListener(onClick);
+        btn.onClick.AddListener(onClickAction);
 
         // Update TMP label
         var tmp = btn.GetComponentInChildren<TMP_Text>(true);
