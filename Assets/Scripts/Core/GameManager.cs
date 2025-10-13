@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,8 +13,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] public Transform[,] grid;
     [SerializeField] public static bool isGameOver = false;
     [SerializeField] private PreviewController preview;
+    [SerializeField] Transform fieldOrigin;
+    [SerializeField] float cellSize = GameConsts.CellSize;
+    [SerializeField] TMP_Text scoreField;
 
-    private Vector2 spawnPosition = GameConsts.SpawnCell;
+    private Vector2Int spawnPosition = GameConsts.SpawnCell;
 
     public const int width = GameConsts.GridWidth;
     public const int height = GameConsts.GridHeight;
@@ -26,8 +30,15 @@ public class GameManager : MonoBehaviour
     private KeyCode restart;
     private KeyCode forfeit;
 
-    void Start()
+    private int score = 0;
+
+    void Awake()
     {
+        if (fieldOrigin == null)
+        {
+            fieldOrigin = transform;
+        }
+
         grid = new Transform[width, height];
         FillBag();
         SpawnNextTetromino();
@@ -36,13 +47,14 @@ public class GameManager : MonoBehaviour
 
         restart = Bootstrap.I.config.restart;
         forfeit = Bootstrap.I.config.forfeit;
-        Debug.Log("GM started");
     }
 
     void Update()
     {
         ExecuteWhenHeld(restart, ref previousRTime, RestartGame);
         ExecuteWhenHeld(forfeit, ref previousFTime, ForfeitGame);
+
+        scoreField.text = score.ToString("#,#");
     }
 
     private void ExecuteWhenHeld(KeyCode key, ref float previousTime, System.Action act)
@@ -71,10 +83,13 @@ public class GameManager : MonoBehaviour
 
     private void InstantiateNewMino(GameObject prefabObj)
     {
-        GameObject newMino = Instantiate(prefabObj, spawnPosition, Quaternion.identity);
-        newMino.GetComponent<Tetromino>().gameManager = this;
+        var pos = CellToWorld(spawnPosition);
+        var newMino = Instantiate(prefabObj, pos, Quaternion.identity);
+        Tetromino tetr = newMino.GetComponent<Tetromino>();
 
-        Tetromino tetroScript = newMino.GetComponent<Tetromino>();
+        newMino.GetComponent<Tetromino>().gameManager = this;
+        newMino.transform.SetParent(fieldOrigin, true);
+
 
         var logic = newMino.GetComponent<InFieldLogic>();
         if (logic != null)
@@ -85,14 +100,14 @@ public class GameManager : MonoBehaviour
         }
 
         int tryCount = 0;
-        while (!tetroScript.IsValidMove())
+        while (!tetr.IsValidMove() && tryCount++ < 2)
         {
-            if (tryCount >= 2)
-            {
-                GameOver();
-            }
             newMino.transform.position += Vector3.up;
-            tryCount++;
+        }
+
+        if (tryCount >= 3)
+        {
+            GameOver();
         }
     }
 
@@ -150,7 +165,6 @@ public class GameManager : MonoBehaviour
         List<int> toClearList = new List<int>();
         for (int y = 0; y < height; y++)
         {
-            
             bool full = true;
             bool empty = true;
             for (int x = 0; x < width; x++)
@@ -233,5 +247,16 @@ public class GameManager : MonoBehaviour
     public void ForfeitGame()
     {
         SceneManager.LoadScene(SceneNames.MainMenu);
+    }
+
+    public Vector3 CellToWorld(Vector2Int cell)
+    {
+        return fieldOrigin.TransformPoint(new Vector3(cell.x, cell.y, 0) * cellSize);
+    }
+
+    public Vector2Int WorldToCell(Vector3 world)
+    {
+        Vector3 local = fieldOrigin.InverseTransformPoint(world) / cellSize;
+        return Vector2Int.RoundToInt(new Vector2(local.x, local.y));
     }
 }

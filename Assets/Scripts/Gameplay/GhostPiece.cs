@@ -32,18 +32,13 @@ public class GhostPiece : MonoBehaviour
     {
         foreach (Transform block in transform)
         {
-            Vector2 pos = Round(block.position + direction);
-            if (!InsideGrid(pos) || gameManager.grid[(int)pos.x, (int)pos.y] != null)
+            Vector2Int cell = gameManager.WorldToCell(block.position + direction);
+            if (!InsideGrid(cell) || gameManager.grid[cell.x, cell.y] != null)
             {
                 return false;
             }
         }
         return true;
-    }
-
-    private Vector2 Round(Vector2 pos)
-    {
-        return new Vector2(Mathf.Round(pos.x), Mathf.Round(pos.y));
     }
 
     private bool InsideGrid(Vector2 pos)

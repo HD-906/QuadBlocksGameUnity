@@ -175,13 +175,13 @@ public class Tetromino : MonoBehaviour
     {
         foreach (Transform block in transform)
         {
-            Vector2 pos = Round(block.position);
-            if (!InsideGrid(pos))
+            Vector2Int cell = gameManager.WorldToCell(block.position);
+            if (!InsideGrid(cell))
             {
                 return false;
             }
 
-            if (gameManager.grid[(int)pos.x, (int)pos.y] != null)
+            if (gameManager.grid[cell.x, cell.y] != null)
             {
                 return false; 
             }
@@ -189,42 +189,33 @@ public class Tetromino : MonoBehaviour
         return true;
     }
 
-    Vector2 Round(Vector2 pos)
-    {
-        return new Vector2(Mathf.Round(pos.x), Mathf.Round(pos.y));
-    }
-
     bool InsideGrid(Vector2 pos)
     {
-        return ((int)pos.x >= 0 && (int)pos.x < GameManager.width && 
-                (int)pos.y >= 0 && (int)pos.y < GameManager.height);
+        return (pos.x >= 0 && pos.x < GameManager.width && 
+                pos.y >= 0 && pos.y < GameManager.height);
     }
 
     void AddToGrid()
     {
         bool overflow = true;
-        if (blockPrefab == null)
-        {
-            Debug.LogError("blockPrefab is not assigned in Tetromino!");
-            return;
-        }
 
         foreach (Transform child in transform)
         {
-            Vector2Int pos = Vector2Int.RoundToInt(child.position);
-            GameObject block = Instantiate(blockPrefab, pos.ToVector2(), Quaternion.identity);
+            Vector2Int cell = gameManager.WorldToCell(child.position);
+            Vector3 world = gameManager.CellToWorld(cell);
+            GameObject block = Instantiate(blockPrefab, world, Quaternion.identity);
 
-            // Render colour to match the original block
-            SpriteRenderer originalSR = child.GetComponent<SpriteRenderer>();
-            SpriteRenderer newSR = block.GetComponent<SpriteRenderer>();
-            if (originalSR != null && newSR != null)
+            // Copy colour
+            var srcSR = child.GetComponent<SpriteRenderer>();
+            var dstSR = block.GetComponent<SpriteRenderer>();
+            if (srcSR != null && dstSR != null)
             {
-                newSR.color = originalSR.color;
+                dstSR.color = srcSR.color;
             }
 
-            gameManager.grid[pos.x, pos.y] = block.transform;
+            gameManager.grid[cell.x, cell.y] = block.transform;
 
-            if (pos.y <= 19)
+            if (cell.y <= 19)
             {
                 overflow = false;
             }
@@ -232,7 +223,7 @@ public class Tetromino : MonoBehaviour
 
         if (overflow)
         {
-            FindFirstObjectByType<GameManager>().GameOver();
+            gameManager.GameOver();
         }
 
         Destroy(gameObject);
