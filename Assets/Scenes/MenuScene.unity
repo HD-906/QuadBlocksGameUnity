@@ -563,6 +563,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   config: {fileID: 11400000, guid: 783bf7052164757409d19bc7af066357, type: 2}
+  nextMenuPage: 0
 --- !u!4 &459529830
 Transform:
   m_ObjectHideFlags: 0

@@ -38,6 +38,8 @@ public class InFieldLogic : MonoBehaviour
     private int movementCount = 0;
     Tetromino tetr;
 
+    private bool lastRotated = false;
+
     public GameManager gameManager;
 
     public enum TetrominoType
@@ -54,7 +56,7 @@ public class InFieldLogic : MonoBehaviour
     {
         var cfg = Bootstrap.I.config;
 
-        gravity = cfg.gravity;
+        gravity = 1 / getIntervalFromLevel(gameManager.level);
         arr = cfg.arr / cfg.frameRate;
         das = cfg.das / cfg.frameRate;
         dcd = cfg.dcd / cfg.frameRate;
@@ -109,15 +111,20 @@ public class InFieldLogic : MonoBehaviour
             if (dropped)
             {
                 previousTime = Time.time;
+                lastRotated = false;
                 if (tetr.transform.localPosition.y < lowestY)
                 {
                     lowestY = (int)tetr.transform.localPosition.y;
+                }
+                if (multiplier > gravity)
+                {
+                    gameManager.AddScore(1);
                 }
             }
             else if (deltaTime > fallTime)
             {
                 gameManager.UpdateLastMovementStatus(cancelLeft, cancelRight);
-                tetr.LockTetromino();
+                tetr.LockTetromino(lastRotated);
                 previousTime = Time.time;
             }
         }
@@ -178,7 +185,8 @@ public class InFieldLogic : MonoBehaviour
         if (Input.GetKeyDown(hardDrop))
         {
             gameManager.UpdateLastMovementStatus(cancelLeft, cancelRight);
-            tetr.HardDropAndLock();
+            int score = tetr.HardDropAndLock(lastRotated) * 2;
+            gameManager.AddScore(score);
         }
 
         if (Input.GetKeyDown(hold))
@@ -252,6 +260,10 @@ public class InFieldLogic : MonoBehaviour
     private void PostRotations()
     {
         bool grounded = PostActions();
+        if (grounded)
+        {
+            lastRotated = true;
+        }
         if (lowestY > tetr.transform.position.y)
         {
             lowestY = (int)tetr.transform.position.y;
@@ -259,13 +271,14 @@ public class InFieldLogic : MonoBehaviour
         }
         else if (movementCount >= GameConsts.maxDelayMovement && grounded)
         {
-            tetr.LockTetromino();
+            tetr.LockTetromino(lastRotated);
         }
     }
 
     private bool PostActions()
     {
         movementCount++;
+        lastRotated = false;
         bool grounded = tetr.CheckGround();
         if (grounded)
         {
@@ -278,6 +291,11 @@ public class InFieldLogic : MonoBehaviour
     {
         cancelLeft = statusLeft;
         cancelRight = statusRight;
+    }
+
+    private float getIntervalFromLevel(int level)
+    {
+        return Mathf.Pow((float)(0.8 - (level - 1) * 0.007), level - 1);
     }
 
     void CreateGhost()

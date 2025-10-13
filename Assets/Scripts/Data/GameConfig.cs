@@ -18,7 +18,6 @@ public class GameConfig : ScriptableObject
     public KeyCode forfeit = KeyCode.Escape;
 
     [Header("Handling")]
-    public float gravity = 1.0f;
     public float arr = 2.0f;
     public float das = 10.0f;
     public float dcd = 1.0f;

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -15,7 +14,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private PreviewController preview;
     [SerializeField] Transform fieldOrigin;
     [SerializeField] float cellSize = GameConsts.CellSize;
-    [SerializeField] TMP_Text scoreField;
+    [SerializeField] public int level = 1;
+    [SerializeField] private InFieldStatus fieldStatus;
 
     private Vector2Int spawnPosition = GameConsts.SpawnCell;
 
@@ -29,8 +29,6 @@ public class GameManager : MonoBehaviour
     private float previousFTime;
     private KeyCode restart;
     private KeyCode forfeit;
-
-    private int score = 0;
 
     void Awake()
     {
@@ -53,8 +51,6 @@ public class GameManager : MonoBehaviour
     {
         ExecuteWhenHeld(restart, ref previousRTime, RestartGame);
         ExecuteWhenHeld(forfeit, ref previousFTime, ForfeitGame);
-
-        scoreField.text = score.ToString("#,#");
     }
 
     private void ExecuteWhenHeld(KeyCode key, ref float previousTime, System.Action act)
@@ -199,6 +195,11 @@ public class GameManager : MonoBehaviour
             return 0;
         }
 
+        if (cleared == upperBound)
+        {
+            fieldStatus.AddScorePerfectClear(cleared, level);
+        }
+
         int yToFill = toClearList[0];
         int yFiller = yToFill + 1;
 
@@ -229,6 +230,16 @@ public class GameManager : MonoBehaviour
             }
         }
         return cleared;
+    }
+
+    public void AddScore(int toAdd)
+    {
+        fieldStatus.AddScore(toAdd);
+    }
+
+    public void AddScoreBonus(int linesCleared, int tSpinStatus)
+    {
+        fieldStatus.AddScoreBonus(linesCleared, tSpinStatus, level);
     }
 
     public void GameOver()
