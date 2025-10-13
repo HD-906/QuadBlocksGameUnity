@@ -137,7 +137,7 @@ public class Tetromino : MonoBehaviour
             if (IsValidMove())
             {
                 orient = nextOrient;
-                rotatedFifthKick = (selectedCount == 5);
+                rotatedFifthKick = (selectedCount == 4);
                 return true;
             }
             selectedCount++;
