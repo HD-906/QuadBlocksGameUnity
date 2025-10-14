@@ -156,6 +156,10 @@ public class Tetromino : MonoBehaviour
         {
             moved = Move(Vector3.down);
             score++;
+            if (score >= 30) // escape if bugged
+            {
+                break;
+            }
         }
         if (score > 0)
         {

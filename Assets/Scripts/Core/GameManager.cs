@@ -89,7 +89,7 @@ public class GameManager : MonoBehaviour
         var newMino = Instantiate(prefabObj, pos, Quaternion.identity);
         Tetromino tetr = newMino.GetComponent<Tetromino>();
 
-        newMino.GetComponent<Tetromino>().gameManager = this;
+        tetr.gameManager = this;
         newMino.transform.SetParent(fieldOrigin, true);
 
 
@@ -110,6 +110,20 @@ public class GameManager : MonoBehaviour
         if (tryCount >= 3)
         {
             GameOver();
+        }
+
+        if (level >=19)
+        {
+            bool moved = true;
+            int counter = 0;
+            while (moved)
+            {
+                moved = tetr.Move(Vector3.down);
+                if (counter++ >= 30) // escape if bugged
+                {
+                    break;
+                }
+            }
         }
     }
 

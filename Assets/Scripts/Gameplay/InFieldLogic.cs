@@ -4,6 +4,8 @@ using UnityEngine;
 public class InFieldLogic : MonoBehaviour
 {
     [SerializeField] private GameObject ghostPrefab;
+    private float accumulator = 0;
+    private const float STEP = 1 / GameConsts.frameRate;
     private float multiplier;
     private float gravity;
     private float arr;
@@ -92,6 +94,8 @@ public class InFieldLogic : MonoBehaviour
             return;
         }
 
+        accumulator += Time.deltaTime;
+
         if (Input.GetKey(softDrop))
         {
             multiplier = gravity * sdf;
@@ -104,31 +108,6 @@ public class InFieldLogic : MonoBehaviour
         if (previousTime < 0)
         {
             previousTime = Time.time;
-        }
-
-        float deltaTime = Time.time - previousTime;
-        if (deltaTime > fallTime / multiplier)
-        {
-            bool dropped = tetr.Move(Vector3.down);
-            if (dropped)
-            {
-                previousTime = Time.time;
-                lastRotated = false;
-                if (tetr.transform.localPosition.y < lowestY)
-                {
-                    lowestY = (int)tetr.transform.localPosition.y;
-                }
-                if (multiplier > gravity)
-                {
-                    gameManager.AddScore(1);
-                }
-            }
-            else if (deltaTime > fallTime)
-            {
-                gameManager.UpdateLastMovementStatus(cancelLeft, cancelRight);
-                tetr.LockTetromino(lastRotated);
-                previousTime = Time.time;
-            }
         }
 
         if (!(Input.GetKey(moveLeft) && Input.GetKey(moveRight)))
@@ -168,19 +147,29 @@ public class InFieldLogic : MonoBehaviour
 
         if (Input.GetKeyDown(rotateLeft))
         {
+            bool groundedPrev = tetr.CheckGround();
             bool rotated = tetr.Rotate(1);
             if (rotated)
             {
-                PostRotations();
+                bool grounded = PostRotations();
+                if (!grounded && groundedPrev)
+                {
+                    previousTime = Time.time;
+                }
             }
         }
 
         if (Input.GetKeyDown(rotateRight))
         {
+            bool groundedPrev = tetr.CheckGround();
             bool rotated = tetr.Rotate(-1);
             if (rotated)
             {
-                PostRotations();
+                bool grounded = PostRotations();
+                if (!grounded && groundedPrev)
+                {
+                    previousTime = Time.time;
+                }
             }
         }
 
@@ -196,14 +185,65 @@ public class InFieldLogic : MonoBehaviour
             gameManager.UpdateLastMovementStatus(cancelLeft, cancelRight);
             tetr.Hold();
         }
+
+        while (accumulator >= STEP)
+        {
+            UpdateFrame();
+            accumulator -= STEP;
+
+            if (accumulator > 20 * STEP)
+            {
+                accumulator = 0;
+                break;
+            }
+        }
+
+    }
+
+    private void UpdateFrame()
+    {
+        float deltaTime = Time.time - previousTime;
+        float fallTimeCurrent = fallTime / multiplier;
+        if (deltaTime > fallTimeCurrent)
+        {
+            int toFallInit = (int) (deltaTime / fallTimeCurrent);
+            int toFall = toFallInit;
+            bool dropped = true;
+            while (dropped && toFall-- > 0)
+            {
+                dropped = tetr.Move(Vector3.down);
+            }
+
+            if (dropped || (toFallInit - toFall > 1))
+            {
+                previousTime = Time.time;
+                lastRotated = false;
+                if (tetr.transform.localPosition.y < lowestY)
+                {
+                    lowestY = (int)tetr.transform.localPosition.y;
+                }
+                if (multiplier > gravity)
+                {
+                    gameManager.AddScore(1);
+                }
+            }
+            else if (deltaTime > fallTime)
+            {
+                gameManager.UpdateLastMovementStatus(cancelLeft, cancelRight);
+                tetr.LockTetromino(lastRotated);
+                previousTime = Time.time;
+            }
+        }
     }
 
     private void HandleHorizontalArr(KeyCode key, ref float previousDownTime, ref float previousArrTime, ref bool dasTriggered, ref bool firstDown, Vector3 v, bool cancel)
     {
+        bool groundedPrev = tetr.CheckGround();
+
         if (Input.GetKeyDown(key))
         {
             previousDownTime = Time.time;
-            MoveHorizontal(v);
+            MoveHorizontal(v, groundedPrev);
             firstDown = true;
         }
 
@@ -226,7 +266,7 @@ public class InFieldLogic : MonoBehaviour
                 {
                     if (!cancel)
                     {
-                        MoveHorizontal(v);
+                        MoveHorizontal(v, groundedPrev);
                     }
                     dasTriggered = true;
                     previousArrTime = Time.time;
@@ -235,7 +275,7 @@ public class InFieldLogic : MonoBehaviour
                 {
                     if (!cancel)
                     {
-                        MoveHorizontal(v);
+                        MoveHorizontal(v, groundedPrev);
                     }
                     previousArrTime = Time.time;
                 }
@@ -250,16 +290,20 @@ public class InFieldLogic : MonoBehaviour
         }
     }
 
-    private void MoveHorizontal(Vector3 v)
+    private void MoveHorizontal(Vector3 v, bool groundedPrev)
     {
         bool moved = tetr.Move(v);
         if (moved)
         {
-            PostActions();
+            bool grounded = PostActions();
+            if (!grounded && groundedPrev)
+            {
+                previousTime = Time.time;
+            }
         }
     }
 
-    private void PostRotations()
+    private bool PostRotations()
     {
         bool grounded = PostActions();
         if (grounded)
@@ -275,6 +319,7 @@ public class InFieldLogic : MonoBehaviour
         {
             tetr.LockTetromino(lastRotated);
         }
+        return grounded;
     }
 
     private bool PostActions()

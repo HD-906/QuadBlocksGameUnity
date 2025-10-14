@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MultiPlayfieldScene.unity
     guid: efe5016a13f36c640906683fded79303
+  - enabled: 1
+    path: Assets/Scenes/MenuScene.unity
+    guid: 22579ca09c64ba44dbaf4ee026eb49f4
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 3590b91b4603b465dbb4216d601bff33, type: 3}
   m_UseUCBPForAssetBundles: 0
