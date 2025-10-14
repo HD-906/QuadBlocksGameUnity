@@ -236,7 +236,16 @@ public class InFieldLogic : MonoBehaviour
         }
     }
 
-    private void HandleHorizontalArr(KeyCode key, ref float previousDownTime, ref float previousArrTime, ref bool dasTriggered, ref bool firstDown, Vector3 v, bool cancel)
+    private void HandleHorizontalArr
+        (
+            KeyCode key, 
+            ref float previousDownTime, 
+            ref float previousArrTime, 
+            ref bool dasTriggered, 
+            ref bool firstDown, 
+            Vector3 v, 
+            bool cancel
+        )
     {
         bool groundedPrev = tetr.CheckGround();
 

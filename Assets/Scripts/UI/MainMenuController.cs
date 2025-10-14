@@ -1,3 +1,4 @@
+using System.Net.Sockets;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -77,9 +78,9 @@ public class MainMenuController : MonoBehaviour
 
         buttons[3].gameObject.SetActive(true);
 
-        Set(0, "Sprint", () => StartMode(SceneNames.PlayfieldSingle, "Game_S_Sprint"));
-        Set(1, "Bliz", () => StartMode(SceneNames.PlayfieldSingle, "Game_S_Bliz"));
-        Set(2, "Endless", () => StartMode(SceneNames.PlayfieldSingle, "Game_S_Endless"));
+        Set(0, "Sprint", () => StartMode(SceneNames.PlayfieldSingle, GameConsts.modeSprint));
+        Set(1, "Blitz", () => StartMode(SceneNames.PlayfieldSingle, GameConsts.modeBlitz));
+        Set(2, "Marathon", () => StartMode(SceneNames.PlayfieldSingle, GameConsts.modeMarathon));
         Set(3, "Custom", OnCustom);
 
         if (Bootstrap.I)
@@ -125,8 +126,8 @@ public class MainMenuController : MonoBehaviour
 
     void StartMode(string scene, string sceneName)
     {
+        SceneData.selectedMode = sceneName;
         SceneManager.LoadScene(scene);
-        Debug.Log(sceneName);
     }
 
     // --------------- Helpers ---------------------

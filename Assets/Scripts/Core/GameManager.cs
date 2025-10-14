@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] float cellSize = GameConsts.CellSize;
     [SerializeField] public int level = 1;
     [SerializeField] private InFieldStatus fieldStatus;
+    [SerializeField] ModeManager modeManager;
 
     private Vector2Int spawnPosition = GameConsts.SpawnCell;
 
