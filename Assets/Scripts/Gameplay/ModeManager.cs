@@ -16,7 +16,6 @@ public class ModeManager : MonoBehaviour
     [SerializeField] GameManager gameManager;
     private bool started = false;
     private float timeStart = 0;
-    private bool endGame = false;
 
     private System.Action<int> updateAction;
 
@@ -87,7 +86,7 @@ public class ModeManager : MonoBehaviour
         condition.text = $"{timeToString()}\nRemaining: {condValue}";
         if (condValue <= 0)
         {
-            endGame = true;
+            gameManager.GameCleared(timeToString());
         }
     }
 
@@ -98,7 +97,7 @@ public class ModeManager : MonoBehaviour
         condition.text = $"Level {condValue}\n{timeToString()}";
         if (timeValue <= 0)
         {
-            endGame = true;
+            gameManager.GameCleared();
         }
 
         int increment = (currentLevel <= 10) ? 0 : 1;

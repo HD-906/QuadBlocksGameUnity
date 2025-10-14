@@ -201,6 +201,7 @@ MonoBehaviour:
   fieldStatus: {fileID: 140510704}
   modeManager: {fileID: 140510705}
   countDownText: {fileID: 1580765956}
+  started: 0
   _fallbackConfig: {fileID: 11400000, guid: 783bf7052164757409d19bc7af066357, type: 2}
 --- !u!4 &140510702
 Transform:
@@ -264,6 +265,7 @@ MonoBehaviour:
   modeName: {fileID: 1751817239}
   condition: {fileID: 2019195453}
   condValue: 40
+  InitSprintLines: 0
   timeValue: 0
   gameManager: {fileID: 140510701}
 --- !u!1 &173465575
@@ -1803,7 +1805,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 5, y: 14}
-  m_SizeDelta: {x: 10, y: 10}
+  m_SizeDelta: {x: 8, y: 8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1580765956
 MonoBehaviour:

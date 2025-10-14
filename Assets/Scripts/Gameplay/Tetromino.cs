@@ -7,6 +7,7 @@ public class Tetromino : MonoBehaviour
     int orient = 0;
     public GameObject blockPrefab;
     private bool rotatedFifthKick = false;
+    private bool locking = false;
 
     public enum TetrominoType
     {
@@ -172,6 +173,11 @@ public class Tetromino : MonoBehaviour
 
     public void LockTetromino(bool lastRotated)
     {
+        if (locking)
+        {
+            return;
+        }
+        locking = true;
         int tSpin = 0;
         if (type == TetrominoType.T && lastRotated)
         {
@@ -183,6 +189,11 @@ public class Tetromino : MonoBehaviour
         gameManager.AddScoreBonus(linesCleared, tSpin);
         gameManager.SpawnNextTetromino();
         enabled = false;
+    }
+
+    public void Locked()
+    {
+        locking = false;
     }
 
     public void Hold()

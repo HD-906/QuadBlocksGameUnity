@@ -89,7 +89,7 @@ public class TetroLogic : MonoBehaviour
 
     void Update()
     {
-        if (GameManager.isGameOver)
+        if (GameManager.gameFinished)
         {
             return;
         }
@@ -198,6 +198,7 @@ public class TetroLogic : MonoBehaviour
             }
         }
 
+        tetr.Locked();
     }
 
     private void UpdateFrame()

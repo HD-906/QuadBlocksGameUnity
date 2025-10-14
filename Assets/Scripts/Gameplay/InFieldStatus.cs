@@ -112,4 +112,9 @@ public class InFieldStatus : MonoBehaviour
 
         score += scoreInc * level;
     }
+
+    public int GetScore()
+    { 
+        return score;
+    }
 }

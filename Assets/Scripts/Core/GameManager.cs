@@ -9,9 +9,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject[] tetrominoPrefabs;
     [SerializeField] private GameObject current;
     [SerializeField] private GameObject onHold;
-    [SerializeField] public bool holdLocked = false;
+    [SerializeField] private bool holdLocked = false;
     [SerializeField] public Transform[,] grid;
-    [SerializeField] public static bool isGameOver = false;
+    [SerializeField] public static bool gameFinished = false;
     [SerializeField] private PreviewController preview;
     [SerializeField] Transform fieldOrigin;
     [SerializeField] float cellSize = GameConsts.CellSize;
@@ -60,7 +60,10 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        countDownText.fontSize = 42;
         countDownText.gameObject.SetActive(true);
+        Time.timeScale = 1f;
+        gameFinished = false;
     }
 
     void Update()
@@ -74,6 +77,7 @@ public class GameManager : MonoBehaviour
                 SpawnNextTetromino();
                 started = true;
                 countDownText.text = "";
+                countDownText.fontSize = 14;
                 countDownText.gameObject.SetActive(false);
             }
         }
@@ -153,7 +157,7 @@ public class GameManager : MonoBehaviour
     {
         holdLocked = false;
 
-        if (isGameOver)
+        if (gameFinished)
             return;
 
         if (currentBag.Count < 7)
@@ -169,12 +173,7 @@ public class GameManager : MonoBehaviour
 
     public bool HoldCheck()
     {
-        if (holdLocked)
-        {
-            return false;
-        }
-
-        return true;
+        return !holdLocked;
     }
 
     public void HoldExecute()
@@ -291,9 +290,26 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
-        Debug.Log("GAME OVER!");
+        countDownText.text = "GAME OVER";
+        countDownText.gameObject.SetActive(true);
         Time.timeScale = 0f;
-        isGameOver = true;
+        gameFinished = true;
+    }
+
+    public void GameCleared(string message) // shows message (time)
+    {
+        countDownText.text = $"GAME CLEARED\n{message}";
+        countDownText.gameObject.SetActive(true);
+        Time.timeScale = 0f;
+        gameFinished = true;
+    }
+
+    public void GameCleared() // shows score
+    {
+        countDownText.text = $"GAME SCORE\n{fieldStatus.GetScore().ToString("#,#")}";
+        countDownText.gameObject.SetActive(true);
+        Time.timeScale = 0f;
+        gameFinished = true;
     }
 
     public void RestartGame()
