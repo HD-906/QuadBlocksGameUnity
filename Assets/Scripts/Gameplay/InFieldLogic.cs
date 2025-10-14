@@ -54,7 +54,9 @@ public class InFieldLogic : MonoBehaviour
 
     void Start()
     {
-        var cfg = Bootstrap.I.config;
+        var cfg = (Bootstrap.I != null && Bootstrap.I.config != null) 
+            ? Bootstrap.I.config 
+            : gameManager._fallbackConfig;
 
         gravity = 1 / getIntervalFromLevel(gameManager.level);
         arr = cfg.arr / cfg.frameRate;

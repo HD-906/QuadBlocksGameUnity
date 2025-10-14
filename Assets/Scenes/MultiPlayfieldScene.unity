@@ -405,6 +405,7 @@ MonoBehaviour:
   cellSize: 1
   level: 1
   fieldStatus: {fileID: 140510704}
+  _fallbackConfig: {fileID: 11400000, guid: 783bf7052164757409d19bc7af066357, type: 2}
 --- !u!4 &140510702
 Transform:
   m_ObjectHideFlags: 0
@@ -1218,6 +1219,7 @@ MonoBehaviour:
   cellSize: 1
   level: 1
   fieldStatus: {fileID: 904708744}
+  _fallbackConfig: {fileID: 11400000, guid: 783bf7052164757409d19bc7af066357, type: 2}
 --- !u!114 &904708744
 MonoBehaviour:
   m_ObjectHideFlags: 0

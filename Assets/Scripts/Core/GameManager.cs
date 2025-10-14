@@ -30,6 +30,8 @@ public class GameManager : MonoBehaviour
     private KeyCode restart;
     private KeyCode forfeit;
 
+    [SerializeField] public GameConfig _fallbackConfig;
+
     void Awake()
     {
         if (fieldOrigin == null)
@@ -43,8 +45,12 @@ public class GameManager : MonoBehaviour
         preview.ShowNext(currentBag);
         preview.ShowHold(onHold);
 
-        restart = Bootstrap.I.config.restart;
-        forfeit = Bootstrap.I.config.forfeit;
+        var cfg = (Bootstrap.I != null && Bootstrap.I.config != null)
+            ? Bootstrap.I.config
+            : _fallbackConfig;
+
+        restart = cfg.restart;
+        forfeit = cfg.forfeit;
     }
 
     void Update()
