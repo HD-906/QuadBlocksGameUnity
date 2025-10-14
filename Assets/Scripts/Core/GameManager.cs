@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -17,6 +18,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] public int level = 1;
     [SerializeField] private InFieldStatus fieldStatus;
     [SerializeField] ModeManager modeManager;
+    [SerializeField] TMP_Text countDownText;
 
     private Vector2Int spawnPosition = GameConsts.SpawnCell;
 
@@ -31,6 +33,9 @@ public class GameManager : MonoBehaviour
     private KeyCode restart;
     private KeyCode forfeit;
 
+    private float countDown = GameConsts.startCountdown;
+    public bool started = false;
+
     [SerializeField] public GameConfig _fallbackConfig;
 
     void Awake()
@@ -42,7 +47,6 @@ public class GameManager : MonoBehaviour
 
         grid = new Transform[width, height];
         FillBag();
-        SpawnNextTetromino();
         preview.ShowNext(currentBag);
         preview.ShowHold(onHold);
 
@@ -54,8 +58,25 @@ public class GameManager : MonoBehaviour
         forfeit = cfg.forfeit;
     }
 
+    private void Start()
+    {
+        countDownText.gameObject.SetActive(true);
+    }
+
     void Update()
     {
+        if (!started)
+        {
+            countDown -= Time.deltaTime;
+            countDownText.text = $"{(int)(countDown + 1)}";
+            if (countDown <= 0)
+            {
+                SpawnNextTetromino();
+                started = true;
+                countDownText.text = "";
+                countDownText.gameObject.SetActive(false);
+            }
+        }
         ExecuteWhenHeld(restart, ref previousRTime, RestartGame);
         ExecuteWhenHeld(forfeit, ref previousFTime, ForfeitGame);
     }
@@ -94,7 +115,7 @@ public class GameManager : MonoBehaviour
         newMino.transform.SetParent(fieldOrigin, true);
 
 
-        var logic = newMino.GetComponent<InFieldLogic>();
+        var logic = newMino.GetComponent<TetroLogic>();
         if (logic != null)
         {
             logic.gameManager = this;
@@ -250,6 +271,7 @@ public class GameManager : MonoBehaviour
                 yFiller++;
             }
         }
+        modeManager.clearLines(cleared);
         return cleared;
     }
 

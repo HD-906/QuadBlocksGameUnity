@@ -27,7 +27,7 @@ public class PreviewSlots : MonoBehaviour
 
         current = Instantiate(prefab, anchor.position, Quaternion.identity, anchor);
 
-        var logic = current.GetComponent<InFieldLogic>();
+        var logic = current.GetComponent<TetroLogic>();
         if (logic)
         {
             logic.enabled = false;

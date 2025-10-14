@@ -12,6 +12,7 @@ public static class GameConsts
     public const int blitzTimeCentiSec = 12000;
     public const float softdropSpeed = 20f;
     public const int maxDelayMovement = 15;
+    public const int startCountdown = 3;
 
     [Header("Defaults")]
     public const float gravity = 1.0f;

@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Tetromino))]
-public class InFieldLogic : MonoBehaviour
+public class TetroLogic : MonoBehaviour
 {
     [SerializeField] private GameObject ghostPrefab;
     private float accumulator = 0;
