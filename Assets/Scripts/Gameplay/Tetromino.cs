@@ -187,10 +187,11 @@ public class Tetromino : MonoBehaviour
 
     public void Hold()
     {
-        bool holdSuccess = gameManager.HoldCurrent();
+        bool holdSuccess = gameManager.HoldCheck();
         if (holdSuccess)
         {
             Destroy(gameObject);
+            gameManager.HoldExecute();
         }
     }
 

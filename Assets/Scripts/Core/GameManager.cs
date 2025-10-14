@@ -167,13 +167,18 @@ public class GameManager : MonoBehaviour
         InstantiateNewMino(current);
     }
 
-    public bool HoldCurrent()
+    public bool HoldCheck()
     {
         if (holdLocked)
         {
             return false;
         }
 
+        return true;
+    }
+
+    public void HoldExecute()
+    {
         if (onHold == null)
         {
             onHold = current;
@@ -187,7 +192,6 @@ public class GameManager : MonoBehaviour
 
         holdLocked = true;
         preview.ShowHold(onHold);
-        return true;
     }
 
     public void UpdateLastMovementStatus(bool statusLeft, bool statusRight)

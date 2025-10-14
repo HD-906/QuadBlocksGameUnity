@@ -116,6 +116,9 @@ public class ModeManager : MonoBehaviour
         condValue = gameManager.level;
         timeValue = timeValueInitial + timePassed;
         condition.text = $"Level {condValue}\n{timeToString()}";
+
+        currentLevel = totalLinesCleared / 10 + 1;
+        gameManager.level = currentLevel;
     }
 
     public void clearLines(int linesCleared)
