@@ -274,8 +274,13 @@ public class GameManager : MonoBehaviour
                 yFiller++;
             }
         }
-        modeManager.clearLines(cleared);
+        modeManager.AddLinesCleared(cleared);
         return cleared;
+    }
+
+    public void RaiseGarbage(int lines)
+    {
+
     }
 
     public void AddScore(int toAdd)

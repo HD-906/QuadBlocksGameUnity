@@ -162,7 +162,6 @@ GameObject:
   - component: {fileID: 140510701}
   - component: {fileID: 140510703}
   - component: {fileID: 140510704}
-  - component: {fileID: 140510705}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -199,7 +198,7 @@ MonoBehaviour:
   cellSize: 1
   level: 1
   fieldStatus: {fileID: 140510704}
-  modeManager: {fileID: 140510705}
+  modeManager: {fileID: 965902221}
   countDownText: {fileID: 1580765956}
   started: 0
   _fallbackConfig: {fileID: 11400000, guid: 783bf7052164757409d19bc7af066357, type: 2}
@@ -250,24 +249,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scoreField: {fileID: 1219573384}
---- !u!114 &140510705
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 140510700}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d051a7ca66d534a4d83fcdcce7c72873, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  modeName: {fileID: 1751817239}
-  condition: {fileID: 2019195453}
-  condValue: 40
-  InitSprintLines: 0
-  timeValue: 0
-  gameManager: {fileID: 140510701}
 --- !u!1 &173465575
 GameObject:
   m_ObjectHideFlags: 0
@@ -844,6 +825,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 965902219}
+  - component: {fileID: 965902220}
+  - component: {fileID: 965902221}
   m_Layer: 0
   m_Name: UI
   m_TagString: Untagged
@@ -873,6 +856,36 @@ Transform:
   - {fileID: 1440987505}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &965902220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 965902218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a621594a928523a4394bc0e8ea03fcd6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &965902221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 965902218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d051a7ca66d534a4d83fcdcce7c72873, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  modeName: {fileID: 1751817239}
+  condition: {fileID: 2019195453}
+  condValue: 40
+  InitSprintLines: 0
+  timeValue: 0
+  gameManager: {fileID: 140510701}
 --- !u!1 &1059132588
 GameObject:
   m_ObjectHideFlags: 0
