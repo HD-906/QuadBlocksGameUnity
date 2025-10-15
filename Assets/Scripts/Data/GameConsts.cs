@@ -4,7 +4,7 @@ public static class GameConsts
 {
     [Header("GameData")]
     public const int GridWidth = 10;
-    public const int GridHeight = 25;
+    public const int GridHeight = 60;
     public static readonly Vector2Int SpawnCell = new(4, 18);
     public const float CellSize = 1f;
 
@@ -13,6 +13,9 @@ public static class GameConsts
     public const float softdropSpeed = 20f;
     public const int maxDelayMovement = 15;
     public const int startCountdown = 3;
+
+    public const int maxGarbageSpawn = 10;
+    public const int maxGarbage = 40;
 
     [Header("Defaults")]
     public const float gravity = 1.0f;

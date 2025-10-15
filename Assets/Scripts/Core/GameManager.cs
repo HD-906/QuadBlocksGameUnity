@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using TMPro;
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -32,6 +33,7 @@ public class GameManager : MonoBehaviour
     private float previousFTime;
     private KeyCode restart;
     private KeyCode forfeit;
+    private int currentTop = 0;
 
     private float countDown = GameConsts.startCountdown;
     public bool started = false;
@@ -83,6 +85,8 @@ public class GameManager : MonoBehaviour
         }
         ExecuteWhenHeld(restart, ref previousRTime, RestartGame);
         ExecuteWhenHeld(forfeit, ref previousFTime, ForfeitGame);
+
+        // Testing(); // for debug testing
     }
 
     private void ExecuteWhenHeld(KeyCode key, ref float previousTime, System.Action act)
@@ -235,6 +239,8 @@ public class GameManager : MonoBehaviour
             }
         }
 
+        currentTop = upperBound - cleared;
+
         if (cleared == 0)
         {
             return 0;
@@ -278,9 +284,38 @@ public class GameManager : MonoBehaviour
         return cleared;
     }
 
-    public void RaiseGarbage(int lines)
+    public int RaiseGarbage(int lines) // incomplete
     {
+        lines = Mathf.Max(Mathf.Min(lines, GameConsts.maxGarbageSpawn), 0);
 
+        if (lines == 0)
+        {  
+            return 0; 
+        }
+
+        for (int y = currentTop - 1; y >= 0; y--)
+        {
+            for (int x = 0; x < GameConsts.GridWidth; x++)
+            {
+                grid[x, y + lines] = grid[x, y];
+                grid[x, y] = null;
+                if (grid[x, y + lines] != null)
+                {
+                    grid[x, y + lines].position += Vector3.up * lines;
+                }
+            }
+        }
+        currentTop += lines;
+
+        return lines;
+    }
+
+    private void Testing() // for debug testing
+    {
+        if (Input.GetKeyDown(KeyCode.Keypad5))
+        {
+            RaiseGarbage(5);
+        }
     }
 
     public void AddScore(int toAdd)
