@@ -56,25 +56,23 @@ public class TetroLogic : MonoBehaviour
 
     void Start()
     {
-        var cfg = (Bootstrap.I != null && Bootstrap.I.config != null) 
-            ? Bootstrap.I.config 
-            : gameManager._fallbackConfig;
+        ControlConfig ctrlCfg = gameManager.ctrlCfg;
 
         gravity = 1 / getIntervalFromLevel(gameManager.level);
-        arr = cfg.arr / cfg.frameRate;
-        das = cfg.das / cfg.frameRate;
-        dcd = cfg.dcd / cfg.frameRate;
-        sdf = cfg.sdf;
+        arr = ctrlCfg.arr / ctrlCfg.frameRate;
+        das = ctrlCfg.das / ctrlCfg.frameRate;
+        dcd = ctrlCfg.dcd / ctrlCfg.frameRate;
+        sdf = ctrlCfg.sdf;
 
         multiplier = gravity;
 
-        moveLeft = cfg.moveLeft;
-        moveRight = cfg.moveRight;
-        softDrop = cfg.softDrop;
-        hardDrop = cfg.hardDrop;
-        rotateRight = cfg.rotateRight;
-        rotateLeft = cfg.rotateLeft;
-        hold = cfg.hold;
+        moveLeft = ctrlCfg.moveLeft;
+        moveRight = ctrlCfg.moveRight;
+        softDrop = ctrlCfg.softDrop;
+        hardDrop = ctrlCfg.hardDrop;
+        rotateRight = ctrlCfg.rotateRight;
+        rotateLeft = ctrlCfg.rotateLeft;
+        hold = ctrlCfg.hold;
     }
 
     void OnEnable()
@@ -350,7 +348,7 @@ public class TetroLogic : MonoBehaviour
         cancelRight = statusRight;
     }
 
-    private float getIntervalFromLevel(int level)
+    protected float getIntervalFromLevel(int level)
     {
         return Mathf.Pow((float)(0.8 - (level - 1) * 0.007), level - 1);
     }

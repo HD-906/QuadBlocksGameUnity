@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
 
     private bool spawnGarbageNow = false;
 
-    [SerializeField] public GameConfig _fallbackConfig;
+    [SerializeField] public ControlConfig ctrlCfg;
 
     void Awake()
     {
@@ -54,12 +54,8 @@ public class GameManager : MonoBehaviour
         preview.ShowNext(currentBag);
         preview.ShowHold(onHold);
 
-        var cfg = (Bootstrap.I != null && Bootstrap.I.config != null)
-            ? Bootstrap.I.config
-            : _fallbackConfig;
-
-        restart = cfg.restart;
-        forfeit = cfg.forfeit;
+        restart = ctrlCfg.restart;
+        forfeit = ctrlCfg.forfeit;
     }
 
     private void Start()
@@ -361,7 +357,7 @@ public class GameManager : MonoBehaviour
 
     private void Testing() // for debug testing
     {
-        if (Input.GetKeyDown(KeyCode.Keypad5))
+        if (Input.GetKeyDown(KeyCode.KeypadEnter))
         {
             Debug.Log("Spawning garbage on next drop");
             spawnGarbageNow = true;

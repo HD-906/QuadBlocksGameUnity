@@ -12,7 +12,6 @@ public class Bootstrap : MonoBehaviour
         get; 
         private set; 
     }
-    public GameConfig config;
     public MenuPage nextMenuPage = MenuPage.Root;
 
     void Awake()

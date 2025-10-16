@@ -202,7 +202,7 @@ MonoBehaviour:
   modeManager: {fileID: 965902221}
   countDownText: {fileID: 1580765956}
   started: 0
-  _fallbackConfig: {fileID: 11400000, guid: 783bf7052164757409d19bc7af066357, type: 2}
+  ctrlCfg: {fileID: 11400000, guid: 8d10e7853df30044396d59a5cd2ce186, type: 2}
 --- !u!4 &140510702
 Transform:
   m_ObjectHideFlags: 0
