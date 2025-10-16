@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using TMPro;
-using Unity.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,6 +7,7 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private List<GameObject> currentBag = new List<GameObject>();
     [SerializeField] private GameObject[] tetrominoPrefabs;
+    [SerializeField] private GameObject blockPrefab;
     [SerializeField] private GameObject current;
     [SerializeField] private GameObject onHold;
     [SerializeField] private bool holdLocked = false;
@@ -23,8 +23,8 @@ public class GameManager : MonoBehaviour
 
     private Vector2Int spawnPosition = GameConsts.SpawnCell;
 
-    public const int width = GameConsts.GridWidth;
-    public const int height = GameConsts.GridHeight;
+    public const int gridWidth = GameConsts.GridWidth;
+    public const int gridHeight = GameConsts.GridHeight;
 
     private bool[] lastPieceMovementStatus = { false, false };
     private float holdTime = GameConsts.holdTime;
@@ -38,6 +38,8 @@ public class GameManager : MonoBehaviour
     private float countDown = GameConsts.startCountdown;
     public bool started = false;
 
+    private bool spawnGarbageNow = false;
+
     [SerializeField] public GameConfig _fallbackConfig;
 
     void Awake()
@@ -47,7 +49,7 @@ public class GameManager : MonoBehaviour
             fieldOrigin = transform;
         }
 
-        grid = new Transform[width, height];
+        grid = new Transform[gridWidth, gridHeight];
         FillBag();
         preview.ShowNext(currentBag);
         preview.ShowHold(onHold);
@@ -86,7 +88,7 @@ public class GameManager : MonoBehaviour
         ExecuteWhenHeld(restart, ref previousRTime, RestartGame);
         ExecuteWhenHeld(forfeit, ref previousFTime, ForfeitGame);
 
-        // Testing(); // for debug testing
+        Testing(); // for debug testing
     }
 
     private void ExecuteWhenHeld(KeyCode key, ref float previousTime, System.Action act)
@@ -206,13 +208,13 @@ public class GameManager : MonoBehaviour
     public int ClearFullLines()
     {
         int cleared = 0;
-        int upperBound = height;
+        int upperBound = gridHeight;
         List<int> toClearList = new List<int>();
-        for (int y = 0; y < height; y++)
+        for (int y = 0; y < gridHeight; y++)
         {
             bool full = true;
             bool empty = true;
-            for (int x = 0; x < width; x++)
+            for (int x = 0; x < gridWidth; x++)
             {
                 if (grid[x, y] == null)
                 {
@@ -264,7 +266,7 @@ public class GameManager : MonoBehaviour
                 }
             }
 
-            for (int x = 0; x < width; x++)
+            for (int x = 0; x < gridWidth; x++)
             {
                 Destroy(grid[x, y]?.gameObject);
                 grid[x, y] = grid[x, yFiller];
@@ -281,10 +283,21 @@ public class GameManager : MonoBehaviour
             }
         }
         modeManager.AddLinesCleared(cleared);
+
         return cleared;
     }
 
-    public int RaiseGarbage(int lines) // incomplete
+    public void RaiseGarbage()
+    {
+        if (spawnGarbageNow)
+        {
+            Debug.Log("Spawning garbage");
+            RaiseGarbage(5);
+            spawnGarbageNow = false;
+        }
+    }
+
+    public int RaiseGarbage(int lines)
     {
         lines = Mathf.Max(Mathf.Min(lines, GameConsts.maxGarbageSpawn), 0);
 
@@ -295,7 +308,7 @@ public class GameManager : MonoBehaviour
 
         for (int y = currentTop - 1; y >= 0; y--)
         {
-            for (int x = 0; x < GameConsts.GridWidth; x++)
+            for (int x = 0; x < gridWidth; x++)
             {
                 grid[x, y + lines] = grid[x, y];
                 grid[x, y] = null;
@@ -307,14 +320,51 @@ public class GameManager : MonoBehaviour
         }
         currentTop += lines;
 
+        int holeCol = PlaceGarbageLineRand();
+        for (int y = 1; y < lines; y++)
+        {
+            holeCol = PlaceGarbageLineRand(y, holeCol);
+        }
+
         return lines;
+    }
+
+    private int PlaceGarbageLineRand(int y, int holeCol)
+    {
+        holeCol = Random.value < 0.7 ? holeCol : Random.Range(0, gridWidth - 1);
+        PlaceGarbageLine(y, holeCol);
+        return holeCol;
+    }
+
+    private int PlaceGarbageLineRand()
+    {
+        int holeCol = Random.Range(0, gridWidth - 1);
+        PlaceGarbageLine(0, holeCol);
+        return holeCol;
+    }
+
+    private void PlaceGarbageLine(int y, int holeColumn)
+    {
+        for (int x = 0; x < gridWidth; x++)
+        {
+            if (x == holeColumn)
+            {
+                Destroy(grid[x, y]?.gameObject);
+                grid[x, y] = null;
+                continue;
+            }
+
+            GameObject block = Instantiate(blockPrefab, CellToWorld(new Vector2Int(x, y)), Quaternion.identity);
+            grid[x, y] = block.transform;
+        }
     }
 
     private void Testing() // for debug testing
     {
         if (Input.GetKeyDown(KeyCode.Keypad5))
         {
-            RaiseGarbage(5);
+            Debug.Log("Spawning garbage on next drop");
+            spawnGarbageNow = true;
         }
     }
 

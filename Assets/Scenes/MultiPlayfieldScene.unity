@@ -397,6 +397,7 @@ MonoBehaviour:
   - {fileID: 8551439121295924820, guid: 06a62944c2248174397753829edea69a, type: 3}
   - {fileID: 874779809270162426, guid: 330ca0b1d1b4a4a48ac37f3c066eb3fa, type: 3}
   - {fileID: 5424429675894832584, guid: c7f9ae65644067d4fb4b5367e80c479b, type: 3}
+  blockPrefab: {fileID: 5492220890843784036, guid: d10c36893f4601142a04c3fc9d15a109, type: 3}
   current: {fileID: 0}
   onHold: {fileID: 0}
   holdLocked: 0
@@ -1452,6 +1453,7 @@ MonoBehaviour:
   - {fileID: 8551439121295924820, guid: 06a62944c2248174397753829edea69a, type: 3}
   - {fileID: 874779809270162426, guid: 330ca0b1d1b4a4a48ac37f3c066eb3fa, type: 3}
   - {fileID: 5424429675894832584, guid: c7f9ae65644067d4fb4b5367e80c479b, type: 3}
+  blockPrefab: {fileID: 5492220890843784036, guid: d10c36893f4601142a04c3fc9d15a109, type: 3}
   current: {fileID: 0}
   onHold: {fileID: 0}
   holdLocked: 0

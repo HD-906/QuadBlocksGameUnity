@@ -42,7 +42,7 @@ public class GhostPiece : MonoBehaviour
 
     private bool InsideGrid(Vector2 pos)
     {
-        return ((int)pos.x >= 0 && (int)pos.x < GameManager.width &&
-                (int)pos.y >= 0 && (int)pos.y < GameManager.height);
+        return ((int)pos.x >= 0 && (int)pos.x < GameManager.gridWidth &&
+                (int)pos.y >= 0 && (int)pos.y < GameManager.gridHeight);
     }    
 }

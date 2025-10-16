@@ -5,7 +5,7 @@ using UnityEngine;
 public class Tetromino : MonoBehaviour
 {
     int orient = 0;
-    public GameObject blockPrefab;
+    [SerializeField] private GameObject blockPrefab;
     private bool rotatedFifthKick = false;
     private bool locking = false;
 
@@ -186,6 +186,7 @@ public class Tetromino : MonoBehaviour
          
         AddToGrid();
         int linesCleared = gameManager.ClearFullLines();
+        gameManager.RaiseGarbage();
         gameManager.AddScoreBonus(linesCleared, tSpin);
         gameManager.SpawnNextTetromino();
         enabled = false;
@@ -226,8 +227,8 @@ public class Tetromino : MonoBehaviour
 
     bool GridValid(Vector2Int cell)
     {
-        return (cell.x >= 0 && cell.x < GameManager.width && 
-                cell.y >= 0 && cell.y < GameManager.height);
+        return (cell.x >= 0 && cell.x < GameManager.gridWidth && 
+                cell.y >= 0 && cell.y < GameManager.gridHeight);
     }
 
     bool GridOccupied(Vector2Int cell)
