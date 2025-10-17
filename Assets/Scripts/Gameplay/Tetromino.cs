@@ -184,10 +184,15 @@ public class Tetromino : MonoBehaviour
             tSpin = CheckTspin();
         } // 0, 1, 2 -> No T-spin, T-spin mini, full T-spin
          
-        AddToGrid();
+        bool lockout = AddToGrid();
         int linesCleared = gameManager.ClearFullLines();
+        if (lockout && linesCleared == 0)
+        {
+            gameManager.GameOver();
+            return;
+        }
         gameManager.RaiseGarbage();
-        gameManager.AddScoreBonus(linesCleared, tSpin);
+        gameManager.LineClearHandling(linesCleared, tSpin);
         gameManager.SpawnNextTetromino();
         enabled = false;
     }
@@ -236,9 +241,9 @@ public class Tetromino : MonoBehaviour
         return gameManager.grid[cell.x, cell.y] != null;
     }
 
-    void AddToGrid()
+    bool AddToGrid() // returns if lockout
     {
-        bool overflow = true;
+        bool lockout = true;
 
         foreach (Transform child in transform)
         {
@@ -258,16 +263,12 @@ public class Tetromino : MonoBehaviour
 
             if (cell.y <= 19)
             {
-                overflow = false;
+                lockout = false;
             }
         }
 
-        if (overflow)
-        {
-            gameManager.GameOver();
-        }
-
         Destroy(gameObject);
+        return lockout;
     }
 
     int CheckTspin() // 0, 1, 2 -> No T-spin, T-spin mini, full T-spin

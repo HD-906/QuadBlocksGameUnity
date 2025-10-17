@@ -18,8 +18,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] float cellSize = GameConsts.CellSize;
     [SerializeField] public int level = 1;
     [SerializeField] private InFieldStatus fieldStatus;
-    [SerializeField] ModeManager modeManager;
     [SerializeField] TMP_Text countDownText;
+
+    [HideInInspector] public ModeManager modeManager;
+    [HideInInspector] public bool is_2P;
 
     private Vector2Int spawnPosition = GameConsts.SpawnCell;
 
@@ -38,7 +40,7 @@ public class GameManager : MonoBehaviour
     private float countDown = GameConsts.startCountdown;
     public bool started = false;
 
-    private bool spawnGarbageNow = false;
+    private int garbageQueue = 0;
 
     [SerializeField] public ControlConfig ctrlCfg;
 
@@ -247,6 +249,7 @@ public class GameManager : MonoBehaviour
         if (cleared == upperBound)
         {
             fieldStatus.AddScorePerfectClear(cleared, level);
+            modeManager.GetGarbagePerfectClear(is_2P);
         }
 
         int yToFill = toClearList[0];
@@ -283,13 +286,18 @@ public class GameManager : MonoBehaviour
         return cleared;
     }
 
+    public void AddGarbageToQueue(int toAdd)
+    {
+        garbageQueue += Mathf.Max(toAdd, 0);
+    }
+
     public void RaiseGarbage()
     {
-        if (spawnGarbageNow)
+        if (garbageQueue > 0)
         {
-            Debug.Log("Spawning garbage");
-            RaiseGarbage(5);
-            spawnGarbageNow = false;
+            int garbageSpawned = Mathf.Min(garbageQueue, GameConsts.maxGarbageSpawn);
+            RaiseGarbage(garbageSpawned);
+            garbageQueue -= garbageSpawned;
         }
     }
 
@@ -359,8 +367,8 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.KeypadEnter))
         {
-            Debug.Log("Spawning garbage on next drop");
-            spawnGarbageNow = true;
+            Debug.Log("Adding Garbage");
+            garbageQueue++;
         }
     }
 
@@ -369,9 +377,12 @@ public class GameManager : MonoBehaviour
         fieldStatus.AddScore(toAdd);
     }
 
-    public void AddScoreBonus(int linesCleared, int tSpinStatus)
+    public void LineClearHandling(int linesCleared, int tSpinStatus)
     {
+        bool backToBack = fieldStatus.BackToBack;
+        int combo = fieldStatus.Combo;
         fieldStatus.AddScoreBonus(linesCleared, tSpinStatus, level);
+        modeManager.GetGarbage(is_2P, linesCleared, tSpinStatus, backToBack, combo);
     }
 
     public void GameOver()

@@ -5,8 +5,9 @@ public class InFieldStatus : MonoBehaviour
 {
     [SerializeField] TMP_Text scoreField;
     private int score = 0;
-    private bool backToBack = false;
-    private int combo = 0;
+
+    public bool BackToBack { get; private set; }
+    public int Combo { get; private set; }
 
     void Update()
     {
@@ -66,24 +67,24 @@ public class InFieldStatus : MonoBehaviour
 
         if (linesCleared * tSpinStatus > 0 || linesCleared == 4)
         {
-            if (backToBack)
+            if (BackToBack)
             {
                 scoreInc += scoreInc / 2;
             }
-            backToBack = true;
+            BackToBack = true;
         }
         else if (linesCleared > 0)
         {
-            backToBack = false;
+            BackToBack = false;
         }
 
         if (linesCleared > 0)
         {
-            scoreInc += 50 * combo++;
+            scoreInc += 50 * Combo++;
         }
         else
         {
-            combo = 0;
+            Combo = 0;
         }
 
         score += scoreInc * level;
@@ -95,7 +96,7 @@ public class InFieldStatus : MonoBehaviour
         switch (linesCleared)
         {
             case 4:
-                scoreInc += backToBack ? 3200 : 2000;
+                scoreInc += BackToBack ? 3200 : 2000;
                 break;
             case 3:
                 scoreInc += 1800;

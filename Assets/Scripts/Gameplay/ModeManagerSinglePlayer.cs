@@ -124,6 +124,13 @@ public class ModeManagerSinglePlayer : ModeManager
         totalLinesCleared += linesCleared;
     }
 
+    public override int GetGarbage(bool is_2P, int linesCleared, int tSpinStatus, bool backToBack, int combo)
+    {
+        return 0; // unused in Single Player
+    }
+
+    public override void GetGarbagePerfectClear(bool is_2P) { }  // unused in Single Player
+
     private string TimeToString()
     {
         Func<int, string> ConvertUnderHr = 

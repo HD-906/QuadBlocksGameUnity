@@ -406,8 +406,9 @@ MonoBehaviour:
   cellSize: 1
   level: 1
   fieldStatus: {fileID: 140510704}
-  modeManager: {fileID: 615494376}
   countDownText: {fileID: 211226113}
+  modeManager: {fileID: 0}
+  is_2P: 0
   started: 0
   ctrlCfg: {fileID: 11400000, guid: 219d714db0f854d48a34370e354c8e58, type: 2}
 --- !u!4 &140510702
@@ -1462,8 +1463,9 @@ MonoBehaviour:
   cellSize: 1
   level: 1
   fieldStatus: {fileID: 904708744}
-  modeManager: {fileID: 615494376}
   countDownText: {fileID: 1595019416}
+  modeManager: {fileID: 0}
+  is_2P: 1
   started: 0
   ctrlCfg: {fileID: 11400000, guid: b1c0b3904b5c2b447b28f7bb3b18d1ca, type: 2}
 --- !u!114 &904708744
