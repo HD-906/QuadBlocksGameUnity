@@ -191,6 +191,7 @@ MonoBehaviour:
   - {fileID: 874779809270162426, guid: 330ca0b1d1b4a4a48ac37f3c066eb3fa, type: 3}
   - {fileID: 5424429675894832584, guid: c7f9ae65644067d4fb4b5367e80c479b, type: 3}
   blockPrefab: {fileID: 5492220890843784036, guid: d10c36893f4601142a04c3fc9d15a109, type: 3}
+  garbageQueuePrefab: {fileID: 5492220890843784036, guid: bf8174fa27a2e8c4cad5dc230dab1263, type: 3}
   current: {fileID: 0}
   onHold: {fileID: 0}
   holdLocked: 0
@@ -199,8 +200,9 @@ MonoBehaviour:
   cellSize: 1
   level: 1
   fieldStatus: {fileID: 140510704}
-  modeManager: {fileID: 965902221}
   countDownText: {fileID: 1580765956}
+  modeManager: {fileID: 965902221}
+  is_2P: 0
   started: 0
   ctrlCfg: {fileID: 11400000, guid: 8d10e7853df30044396d59a5cd2ce186, type: 2}
 --- !u!4 &140510702

@@ -7,11 +7,7 @@ public enum MenuPage
 
 public class Bootstrap : MonoBehaviour
 {
-    public static Bootstrap I 
-    {  
-        get; 
-        private set; 
-    }
+    public static Bootstrap I { get; private set; }
     public MenuPage nextMenuPage = MenuPage.Root;
 
     void Awake()

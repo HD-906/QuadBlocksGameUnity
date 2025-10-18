@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private List<GameObject> currentBag = new List<GameObject>();
     [SerializeField] private GameObject[] tetrominoPrefabs;
     [SerializeField] private GameObject blockPrefab;
+    [SerializeField] private GameObject garbageQueuePrefab;
     [SerializeField] private GameObject current;
     [SerializeField] private GameObject onHold;
     [SerializeField] private bool holdLocked = false;
@@ -35,14 +36,19 @@ public class GameManager : MonoBehaviour
     private float previousFTime;
     private KeyCode restart;
     private KeyCode forfeit;
-    private int currentTop = 0;
 
     private float countDown = GameConsts.startCountdown;
     public bool started = false;
 
-    private int garbageQueue = 0;
+    private List<GameObject> queueObj = new List<GameObject>();
+    private GarbageHandler garbageHandler;
 
     [SerializeField] public ControlConfig ctrlCfg;
+
+    public GameObject BlockPrefab
+    { 
+        get { return blockPrefab; }
+    }
 
     void Awake()
     {
@@ -55,6 +61,7 @@ public class GameManager : MonoBehaviour
         FillBag();
         preview.ShowNext(currentBag);
         preview.ShowHold(onHold);
+        garbageHandler = new(this);
 
         restart = ctrlCfg.restart;
         forfeit = ctrlCfg.forfeit;
@@ -239,7 +246,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        currentTop = upperBound - cleared;
+        garbageHandler.currentTop = upperBound - cleared;
 
         if (cleared == 0)
         {
@@ -288,98 +295,48 @@ public class GameManager : MonoBehaviour
 
     public void AddGarbageToQueue(int toAdd)
     {
-        garbageQueue += Mathf.Max(toAdd, 0);
+        garbageHandler.AddGarbageToQueue(toAdd);
     }
 
     public int RemoveGarbageFromQueue(int toRemove)
     {
-        if (toRemove < 0)
-        {
-            return 0;
-        }    
-        int removed = Mathf.Min(toRemove, garbageQueue);
-        garbageQueue -= removed;
-        return toRemove - removed;
+        return garbageHandler.RemoveGarbageFromQueue(toRemove);
     }
 
     public void RaiseGarbage()
     {
-        if (garbageQueue > 0)
-        {
-            int garbageSpawned = Mathf.Min(garbageQueue, GameConsts.maxGarbageSpawn);
-            RaiseGarbage(garbageSpawned);
-            garbageQueue -= garbageSpawned;
-        }
+        garbageHandler.RaiseGarbage();
     }
 
-    private int RaiseGarbage(int lines)
-    {
-        lines = Mathf.Max(Mathf.Min(lines, GameConsts.maxGarbageSpawn), 0);
+    //private void ShowGarbageQueue(float f)
+    //{
+    //    // garbageQueue
+    //    for (int y = 0; y < garbageQueue;  y++)
+    //    {
+    //        GameObject block = Instantiate
+    //            (
+    //                garbageQueuePrefab,
+    //                CellToWorld(new Vector2Int(0, y)) + Vector3.left * 0.75f,
+    //                Quaternion.identity
+    //            );
+    //        queueObj.Add(block);
+    //    }
 
-        if (lines == 0)
-        {  
-            return 0; 
-        }
 
-        for (int y = currentTop - 1; y >= 0; y--)
-        {
-            for (int x = 0; x < gridWidth; x++)
-            {
-                grid[x, y + lines] = grid[x, y];
-                grid[x, y] = null;
-                if (grid[x, y + lines] != null)
-                {
-                    grid[x, y + lines].position += Vector3.up * lines;
-                }
-            }
-        }
-        currentTop += lines;
-
-        int holeCol = PlaceGarbageLineRand();
-        for (int y = 1; y < lines; y++)
-        {
-            holeCol = PlaceGarbageLineRand(y, holeCol);
-        }
-
-        return lines;
-    }
-
-    private int PlaceGarbageLineRand(int y, int holeCol)
-    {
-        holeCol = Random.value < 0.7 ? holeCol : Random.Range(0, gridWidth - 1);
-        PlaceGarbageLine(y, holeCol);
-        return holeCol;
-    }
-
-    private int PlaceGarbageLineRand()
-    {
-        int holeCol = Random.Range(0, gridWidth - 1);
-        PlaceGarbageLine(0, holeCol);
-        return holeCol;
-    }
-
-    private void PlaceGarbageLine(int y, int holeColumn)
-    {
-        for (int x = 0; x < gridWidth; x++)
-        {
-            if (x == holeColumn)
-            {
-                Destroy(grid[x, y]?.gameObject);
-                grid[x, y] = null;
-                continue;
-            }
-
-            GameObject block = Instantiate(blockPrefab, CellToWorld(new Vector2Int(x, y)), Quaternion.identity);
-            grid[x, y] = block.transform;
-        }
-    }
+    //    Instantiate
+    //        (
+    //            garbageQueuePrefab,
+    //            CellToWorld(new Vector2Int(9, 19)) + Vector3.right * 0.85f,
+    //            Quaternion.identity
+    //        );
+    //}
 
     private void Testing() // for debug testing
     {
         if (Input.GetKeyDown(KeyCode.KeypadEnter))
         {
             Debug.Log("Adding Garbage");
-            garbageQueue++;
+            garbageHandler.garbageQueue++;
         }
     }
 
