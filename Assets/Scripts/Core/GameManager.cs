@@ -291,6 +291,17 @@ public class GameManager : MonoBehaviour
         garbageQueue += Mathf.Max(toAdd, 0);
     }
 
+    public int RemoveGarbageFromQueue(int toRemove)
+    {
+        if (toRemove < 0)
+        {
+            return 0;
+        }    
+        int removed = Mathf.Min(toRemove, garbageQueue);
+        garbageQueue -= removed;
+        return toRemove - removed;
+    }
+
     public void RaiseGarbage()
     {
         if (garbageQueue > 0)
@@ -301,7 +312,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public int RaiseGarbage(int lines)
+    private int RaiseGarbage(int lines)
     {
         lines = Mathf.Max(Mathf.Min(lines, GameConsts.maxGarbageSpawn), 0);
 

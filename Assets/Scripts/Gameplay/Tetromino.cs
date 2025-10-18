@@ -191,8 +191,9 @@ public class Tetromino : MonoBehaviour
             gameManager.GameOver();
             return;
         }
-        gameManager.RaiseGarbage();
         gameManager.LineClearHandling(linesCleared, tSpin);
+        // Cancels garbage before spawning garbage from queue
+        gameManager.RaiseGarbage();
         gameManager.SpawnNextTetromino();
         enabled = false;
     }

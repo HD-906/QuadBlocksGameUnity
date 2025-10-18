@@ -56,14 +56,45 @@ public class ModeManagerMultiPlayer : ModeManager
 
     public override int GetGarbage(bool is_2P, int linesCleared, int tSpinStatus, bool backToBack, int combo)
     { // To be finished
+        int garbage = 0;
+        if (tSpinStatus < 2)
+        {
+            if (linesCleared < 4)
+            {
+                garbage = linesCleared - 1;
+            }
+            else
+            {
+                garbage = 4;
+            }
+
+            if (backToBack && tSpinStatus == 1)
+            {
+                garbage++;
+            }
+        }
+        else // proper t-spin
+        {
+            garbage = linesCleared * (backToBack ? 3 : 2);
+        }
+
+        garbage += GameConsts.GetLinesCombo(combo);
+
         if (is_2P)
         {
-            gameManager_1.AddGarbageToQueue(0);
+            HandleGarbage(gameManager_2, gameManager_1, garbage);
         }
         else
         {
-            gameManager_2.AddGarbageToQueue(0);
+            HandleGarbage(gameManager_1, gameManager_2, garbage);
         }
-        return 0;
+
+        return garbage;
+    }
+
+    private void HandleGarbage(GameManager sender, GameManager receiver, int garbage)
+    {
+        garbage = sender.RemoveGarbageFromQueue(garbage);
+        receiver.AddGarbageToQueue(garbage);
     }
 }

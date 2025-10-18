@@ -66,4 +66,16 @@ public static class GameConsts
     public const string modeSprint  = "Sprint";
     public const string modeBlitz = "Blitz";
     public const string modeMarathon = "Marathon";
+
+    [Header("Combo Garbage List")]
+
+    private static readonly int[] linesByCombo = {
+        0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 4, 4, 4, 5
+    };
+
+    public static int GetLinesCombo(int combo)
+    {
+        int i = Mathf.Clamp(combo, 0, linesByCombo.Length - 1);
+        return linesByCombo[i];
+    }
 }
