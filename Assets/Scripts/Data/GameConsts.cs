@@ -13,6 +13,8 @@ public static class GameConsts
     public const float softdropSpeed = 20f;
     public const int maxDelayMovement = 15;
     public const int startCountdown = 3;
+    public const float harddropEnableTime = 0.1f;
+    public const float lockDelayTime = 0.5f;
 
     public const int maxGarbageSpawn = 10;
     public const int maxGarbage = 40;

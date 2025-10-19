@@ -167,6 +167,7 @@ public class Tetromino : MonoBehaviour
             lastRotated = false;
         }
         LockTetromino(lastRotated);
+        gameManager.lastPieceHarddroped = true;
 
         return score;
     }
@@ -177,6 +178,7 @@ public class Tetromino : MonoBehaviour
         {
             return;
         }
+        gameManager.lastPieceHarddroped = false;
         locking = true;
         int tSpin = 0;
         if (type == TetrominoType.T && lastRotated)

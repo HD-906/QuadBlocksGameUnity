@@ -30,6 +30,7 @@ public class GameManager : MonoBehaviour
     public const int gridHeight = GameConsts.GridHeight;
 
     private bool[] lastPieceMovementStatus = { false, false };
+    public bool lastPieceHarddroped = true;
     private float holdTime = GameConsts.holdTime;
 
     private float previousRTime;
@@ -135,7 +136,7 @@ public class GameManager : MonoBehaviour
         if (logic != null)
         {
             logic.gameManager = this;
-            logic.SetCancelStatus(lastPieceMovementStatus[0], lastPieceMovementStatus[1]);
+            logic.SetLeftRightCancelStatus(lastPieceMovementStatus[0], lastPieceMovementStatus[1]);
             logic.enabled = true;
         }
 

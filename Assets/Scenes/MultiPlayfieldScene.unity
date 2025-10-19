@@ -403,6 +403,7 @@ MonoBehaviour:
   current: {fileID: 0}
   onHold: {fileID: 0}
   holdLocked: 0
+  gameOverTriggered: 0
   preview: {fileID: 140510703}
   fieldOrigin: {fileID: 0}
   cellSize: 1
@@ -412,7 +413,7 @@ MonoBehaviour:
   modeManager: {fileID: 0}
   is_2P: 0
   started: 0
-  garbageHandler: {fileID: 0}
+  garbageHandler: {fileID: 140510706}
   ctrlCfg: {fileID: 11400000, guid: 219d714db0f854d48a34370e354c8e58, type: 2}
 --- !u!4 &140510702
 Transform:
@@ -473,7 +474,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d25b12bae89d5304b9b2ae90248116d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  handler: {fileID: 140510706}
+  gameManager: {fileID: 140510701}
   unitPrefab: {fileID: 5492220890843784036, guid: bf8174fa27a2e8c4cad5dc230dab1263, type: 3}
 --- !u!114 &140510706
 MonoBehaviour:
@@ -1492,6 +1493,7 @@ MonoBehaviour:
   current: {fileID: 0}
   onHold: {fileID: 0}
   holdLocked: 0
+  gameOverTriggered: 0
   preview: {fileID: 904708742}
   fieldOrigin: {fileID: 0}
   cellSize: 1
@@ -1501,7 +1503,7 @@ MonoBehaviour:
   modeManager: {fileID: 0}
   is_2P: 1
   started: 0
-  garbageHandler: {fileID: 0}
+  garbageHandler: {fileID: 904708746}
   ctrlCfg: {fileID: 11400000, guid: b1c0b3904b5c2b447b28f7bb3b18d1ca, type: 2}
 --- !u!114 &904708744
 MonoBehaviour:
@@ -1528,7 +1530,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d25b12bae89d5304b9b2ae90248116d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  handler: {fileID: 904708746}
+  gameManager: {fileID: 904708743}
   unitPrefab: {fileID: 5492220890843784036, guid: bf8174fa27a2e8c4cad5dc230dab1263, type: 3}
 --- !u!114 &904708746
 MonoBehaviour:

@@ -28,6 +28,9 @@ public class TetroLogic : MonoBehaviour
     private bool firstLeftDown = false;
     private bool firstRightDown = false;
     private float fallTime = 0.5f;
+    private float lockDelayTime = GameConsts.lockDelayTime;
+    private float harddropEnableTime = GameConsts.harddropEnableTime;
+    private float startTime;
     private GameObject ghostGO;
     private GhostPiece ghost;
 
@@ -73,6 +76,8 @@ public class TetroLogic : MonoBehaviour
         rotateRight = ctrlCfg.rotateRight;
         rotateLeft = ctrlCfg.rotateLeft;
         hold = ctrlCfg.hold;
+
+        startTime = Time.time;
     }
 
     void OnEnable()
@@ -110,15 +115,15 @@ public class TetroLogic : MonoBehaviour
 
         if (!(Input.GetKey(moveLeft) && Input.GetKey(moveRight)))
         {
-            SetCancelStatus(false, false);
+            SetLeftRightCancelStatus(false, false);
         }
         else if (Input.GetKeyDown(moveLeft) && Input.GetKey(moveRight))
         {
-            SetCancelStatus(false, true);
+            SetLeftRightCancelStatus(false, true);
         }
         else if (Input.GetKey(moveLeft) && Input.GetKeyDown(moveRight))
         {
-            SetCancelStatus(true, false);
+            SetLeftRightCancelStatus(true, false);
         }
 
         HandleHorizontalArr
@@ -171,7 +176,11 @@ public class TetroLogic : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(hardDrop))
+        if 
+        (
+            Input.GetKeyDown(hardDrop) && 
+            (gameManager.lastPieceHarddroped || (Time.time - startTime > harddropEnableTime))
+        )
         {
             gameManager.UpdateLastMovementStatus(cancelLeft, cancelRight);
             int score = tetr.HardDropAndLock(lastRotated) * 2;
@@ -226,7 +235,7 @@ public class TetroLogic : MonoBehaviour
                     gameManager.AddScore(1);
                 }
             }
-            else if (deltaTime > fallTime)
+            else if (deltaTime > lockDelayTime)
             {
                 gameManager.UpdateLastMovementStatus(cancelLeft, cancelRight);
                 tetr.LockTetromino(lastRotated);
@@ -342,7 +351,7 @@ public class TetroLogic : MonoBehaviour
         return grounded;
     }
 
-    public void SetCancelStatus(bool statusLeft, bool statusRight)
+    public void SetLeftRightCancelStatus(bool statusLeft, bool statusRight)
     {
         cancelLeft = statusLeft;
         cancelRight = statusRight;

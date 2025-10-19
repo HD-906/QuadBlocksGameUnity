@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class ModeManagerMultiPlayer : ModeManager
 {
-    private int totalLinesCleared = 0;
-    private int currentLevel = 1;
     [SerializeField] GameManager gameManager_1;
     [SerializeField] GameManager gameManager_2;
+    private int currentLevel = 1;
+    private float startTime;
 
     private bool started = false;
 
@@ -22,6 +22,7 @@ public class ModeManagerMultiPlayer : ModeManager
 
     void Start()
     {
+        startTime = Time.time;
     }
 
     private void Update()
@@ -35,12 +36,12 @@ public class ModeManagerMultiPlayer : ModeManager
         {
             return;
         }
+
+        currentLevel = Mathf.Clamp((int)((Time.time - startTime) / 60f) + 1, 1, 20);
+        gameManager_1.level = gameManager_2.level = currentLevel;
     }
 
-    public override void AddLinesCleared(int linesCleared)
-    {
-        totalLinesCleared += linesCleared;
-    }
+    public override void AddLinesCleared(int linesCleared) { } // used in Single Player mode
 
     public override void GetGarbagePerfectClear(bool is_2P)
     {
