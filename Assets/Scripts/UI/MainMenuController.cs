@@ -94,19 +94,20 @@ public class MainMenuController : MonoBehaviour
     // --------------- Callbacks -------------------
     void ShowMultiPlayer()
     {
-        ClearAll();
+        StartMode(SceneNames.PlayfieldMulti, "Game_M_Modern");
+        //ClearAll();
 
-        buttons[2].gameObject.SetActive(true);
+        //buttons[2].gameObject.SetActive(true);
 
-        Set(0, "Classic", () => StartMode(SceneNames.PlayfieldMulti, "Game_M_Classic"));
-        Set(1, "Modern", () => StartMode(SceneNames.PlayfieldMulti, "Game_M_Modern"));
+        //Set(0, "Classic", () => StartMode(SceneNames.PlayfieldMulti, "Game_M_Classic"));
+        //Set(1, "Modern", () => StartMode(SceneNames.PlayfieldMulti, "Game_M_Modern"));
 
-        if (Bootstrap.I)
-        {
-            Bootstrap.I.nextMenuPage = MenuPage.MultiPlayer;
-        }
+        //if (Bootstrap.I)
+        //{
+        //    Bootstrap.I.nextMenuPage = MenuPage.MultiPlayer;
+        //}
 
-        backButton.gameObject.SetActive(true);
+        //backButton.gameObject.SetActive(true);
     }
 
     void ShowConfig()

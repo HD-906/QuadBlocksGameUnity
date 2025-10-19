@@ -9,8 +9,6 @@ public class ModeManagerMultiPlayer : ModeManager
 
     private bool started = false;
 
-    private System.Action<int> updateAction;
-
     private void Awake()
     {
         gameManager_1.is_2P = false;
