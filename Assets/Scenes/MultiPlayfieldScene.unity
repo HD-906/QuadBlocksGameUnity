@@ -369,6 +369,8 @@ GameObject:
   - component: {fileID: 140510701}
   - component: {fileID: 140510703}
   - component: {fileID: 140510704}
+  - component: {fileID: 140510706}
+  - component: {fileID: 140510705}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -397,7 +399,6 @@ MonoBehaviour:
   - {fileID: 8551439121295924820, guid: 06a62944c2248174397753829edea69a, type: 3}
   - {fileID: 874779809270162426, guid: 330ca0b1d1b4a4a48ac37f3c066eb3fa, type: 3}
   - {fileID: 5424429675894832584, guid: c7f9ae65644067d4fb4b5367e80c479b, type: 3}
-  blockPrefab: {fileID: 5492220890843784036, guid: d10c36893f4601142a04c3fc9d15a109, type: 3}
   garbageQueuePrefab: {fileID: 5492220890843784036, guid: bf8174fa27a2e8c4cad5dc230dab1263, type: 3}
   current: {fileID: 0}
   onHold: {fileID: 0}
@@ -411,6 +412,7 @@ MonoBehaviour:
   modeManager: {fileID: 0}
   is_2P: 0
   started: 0
+  garbageHandler: {fileID: 0}
   ctrlCfg: {fileID: 11400000, guid: 219d714db0f854d48a34370e354c8e58, type: 2}
 --- !u!4 &140510702
 Transform:
@@ -459,6 +461,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scoreField: {fileID: 1331324073}
+--- !u!114 &140510705
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 140510700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d25b12bae89d5304b9b2ae90248116d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handler: {fileID: 140510706}
+  unitPrefab: {fileID: 5492220890843784036, guid: bf8174fa27a2e8c4cad5dc230dab1263, type: 3}
+--- !u!114 &140510706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 140510700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4165d0b8994e7b14b8d4b2ea1424a0a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blockPrefab: {fileID: 5492220890843784036, guid: d10c36893f4601142a04c3fc9d15a109, type: 3}
+  gameManager: {fileID: 140510701}
+  currentTop: 0
 --- !u!1 &173465575
 GameObject:
   m_ObjectHideFlags: 0
@@ -1393,6 +1424,8 @@ GameObject:
   - component: {fileID: 904708743}
   - component: {fileID: 904708742}
   - component: {fileID: 904708744}
+  - component: {fileID: 904708746}
+  - component: {fileID: 904708745}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1455,7 +1488,6 @@ MonoBehaviour:
   - {fileID: 8551439121295924820, guid: 06a62944c2248174397753829edea69a, type: 3}
   - {fileID: 874779809270162426, guid: 330ca0b1d1b4a4a48ac37f3c066eb3fa, type: 3}
   - {fileID: 5424429675894832584, guid: c7f9ae65644067d4fb4b5367e80c479b, type: 3}
-  blockPrefab: {fileID: 5492220890843784036, guid: d10c36893f4601142a04c3fc9d15a109, type: 3}
   garbageQueuePrefab: {fileID: 5492220890843784036, guid: bf8174fa27a2e8c4cad5dc230dab1263, type: 3}
   current: {fileID: 0}
   onHold: {fileID: 0}
@@ -1469,6 +1501,7 @@ MonoBehaviour:
   modeManager: {fileID: 0}
   is_2P: 1
   started: 0
+  garbageHandler: {fileID: 0}
   ctrlCfg: {fileID: 11400000, guid: b1c0b3904b5c2b447b28f7bb3b18d1ca, type: 2}
 --- !u!114 &904708744
 MonoBehaviour:
@@ -1483,6 +1516,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scoreField: {fileID: 1960064548}
+--- !u!114 &904708745
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 904708740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d25b12bae89d5304b9b2ae90248116d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handler: {fileID: 904708746}
+  unitPrefab: {fileID: 5492220890843784036, guid: bf8174fa27a2e8c4cad5dc230dab1263, type: 3}
+--- !u!114 &904708746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 904708740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4165d0b8994e7b14b8d4b2ea1424a0a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  blockPrefab: {fileID: 5492220890843784036, guid: d10c36893f4601142a04c3fc9d15a109, type: 3}
+  gameManager: {fileID: 904708743}
+  currentTop: 0
 --- !u!1 &986888328
 GameObject:
   m_ObjectHideFlags: 0

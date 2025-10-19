@@ -5,7 +5,7 @@ public class PauseMenuInput : MonoBehaviour
     void Update()
     {
         GameManager manager = FindAnyObjectByType<GameManager>();
-        if (manager == null || !GameManager.gameFinished)
+        if (manager == null || !GameManager.gameEnded)
         {
             return;
         }

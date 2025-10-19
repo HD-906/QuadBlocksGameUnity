@@ -7,13 +7,13 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private List<GameObject> currentBag = new List<GameObject>();
     [SerializeField] private GameObject[] tetrominoPrefabs;
-    [SerializeField] private GameObject blockPrefab;
     [SerializeField] private GameObject garbageQueuePrefab;
     [SerializeField] private GameObject current;
     [SerializeField] private GameObject onHold;
     [SerializeField] private bool holdLocked = false;
     [SerializeField] public Transform[,] grid;
-    [SerializeField] public static bool gameFinished = false;
+    [SerializeField] public bool gameOverTriggered = false;
+    [SerializeField] public static bool gameEnded = false;
     [SerializeField] private PreviewController preview;
     [SerializeField] Transform fieldOrigin;
     [SerializeField] float cellSize = GameConsts.CellSize;
@@ -41,14 +41,9 @@ public class GameManager : MonoBehaviour
     public bool started = false;
 
     private List<GameObject> queueObj = new List<GameObject>();
-    private GarbageHandler garbageHandler;
+    public GarbageHandler garbageHandler;
 
     [SerializeField] public ControlConfig ctrlCfg;
-
-    public GameObject BlockPrefab
-    { 
-        get { return blockPrefab; }
-    }
 
     void Awake()
     {
@@ -61,7 +56,6 @@ public class GameManager : MonoBehaviour
         FillBag();
         preview.ShowNext(currentBag);
         preview.ShowHold(onHold);
-        garbageHandler = new(this);
 
         restart = ctrlCfg.restart;
         forfeit = ctrlCfg.forfeit;
@@ -72,7 +66,7 @@ public class GameManager : MonoBehaviour
         countDownText.fontSize = 42;
         countDownText.gameObject.SetActive(true);
         Time.timeScale = 1f;
-        gameFinished = false;
+        gameOverTriggered = false;
     }
 
     void Update()
@@ -92,6 +86,13 @@ public class GameManager : MonoBehaviour
         }
         ExecuteWhenHeld(restart, ref previousRTime, RestartGame);
         ExecuteWhenHeld(forfeit, ref previousFTime, ForfeitGame);
+
+        if (gameEnded && !gameOverTriggered)
+        {
+            countDownText.text = "YOU WIN!";
+            countDownText.gameObject.SetActive(true);
+            Time.timeScale = 0f;
+        }
 
         Testing(); // for debug testing
     }
@@ -168,7 +169,7 @@ public class GameManager : MonoBehaviour
     {
         holdLocked = false;
 
-        if (gameFinished)
+        if (gameEnded)
             return;
 
         if (currentBag.Count < 7)
@@ -308,35 +309,12 @@ public class GameManager : MonoBehaviour
         garbageHandler.RaiseGarbage();
     }
 
-    //private void ShowGarbageQueue(float f)
-    //{
-    //    // garbageQueue
-    //    for (int y = 0; y < garbageQueue;  y++)
-    //    {
-    //        GameObject block = Instantiate
-    //            (
-    //                garbageQueuePrefab,
-    //                CellToWorld(new Vector2Int(0, y)) + Vector3.left * 0.75f,
-    //                Quaternion.identity
-    //            );
-    //        queueObj.Add(block);
-    //    }
-
-
-    //    Instantiate
-    //        (
-    //            garbageQueuePrefab,
-    //            CellToWorld(new Vector2Int(9, 19)) + Vector3.right * 0.85f,
-    //            Quaternion.identity
-    //        );
-    //}
-
     private void Testing() // for debug testing
     {
         if (Input.GetKeyDown(KeyCode.KeypadEnter))
         {
             Debug.Log("Adding Garbage");
-            garbageHandler.garbageQueue++;
+            garbageHandler.AddGarbageToQueue(1);
         }
     }
 
@@ -358,7 +336,8 @@ public class GameManager : MonoBehaviour
         countDownText.text = "GAME OVER";
         countDownText.gameObject.SetActive(true);
         Time.timeScale = 0f;
-        gameFinished = true;
+        gameOverTriggered = true;
+        gameEnded = true;
     }
 
     public void GameCleared(string message) // shows message (time)
@@ -366,7 +345,8 @@ public class GameManager : MonoBehaviour
         countDownText.text = $"GAME CLEARED\n{message}";
         countDownText.gameObject.SetActive(true);
         Time.timeScale = 0f;
-        gameFinished = true;
+        gameOverTriggered = true;
+        gameEnded = true;
     }
 
     public void GameCleared() // shows score
@@ -374,7 +354,8 @@ public class GameManager : MonoBehaviour
         countDownText.text = $"GAME SCORE\n{fieldStatus.GetScore().ToString("#,#")}";
         countDownText.gameObject.SetActive(true);
         Time.timeScale = 0f;
-        gameFinished = true;
+        gameOverTriggered = true;
+        gameEnded = true;
     }
 
     public void RestartGame()

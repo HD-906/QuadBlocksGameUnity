@@ -2,25 +2,31 @@ using UnityEngine;
 
 public class GarbageHandler : MonoBehaviour
 {
-    private GameObject blockPrefab;
-    private GameManager gameManager;
-    private Transform[,] grid;
-    public int garbageQueue = 0;
+    [SerializeField] private GameObject blockPrefab;
+    [SerializeField] private GameManager gameManager;
+    private int garbageQueue = 0;
+    public int MaxGarbage { get; } = GameConsts.maxGarbage;
+    public int MaxGarbageSpawn { get; } = GameConsts.maxGarbageSpawn;
     public int currentTop = 0;
+    public event System.Action<int> OnChanged;
+    public int GarbageQueue
+    {
+        get => garbageQueue;
+        private set
+        {
+            value = Mathf.Clamp(value, 0, MaxGarbage);
+            if (value == garbageQueue) return;
+            garbageQueue = value;
+            OnChanged?.Invoke(value);
+        }
+    }
 
     public const int gridWidth = GameConsts.GridWidth;
     public const int gridHeight = GameConsts.GridHeight;
 
-    public GarbageHandler(GameManager gameManager)
-    {
-        this.gameManager = gameManager;
-        grid = gameManager.grid;
-        blockPrefab = gameManager.BlockPrefab;
-    }
-
     public void AddGarbageToQueue(int toAdd)
     {
-        garbageQueue += Mathf.Max(toAdd, 0);
+        GarbageQueue += Mathf.Max(toAdd, 0);
     }
 
     public int RemoveGarbageFromQueue(int toRemove)
@@ -29,30 +35,31 @@ public class GarbageHandler : MonoBehaviour
         {
             return 0;
         }
-        int removed = Mathf.Min(toRemove, garbageQueue);
-        garbageQueue -= removed;
+        int removed = Mathf.Min(toRemove, GarbageQueue);
+        GarbageQueue -= removed;
         return toRemove - removed;
     }
 
     public void RaiseGarbage()
     {
-        if (garbageQueue > 0)
+        if (GarbageQueue > 0)
         {
-            int garbageSpawned = Mathf.Min(garbageQueue, GameConsts.maxGarbageSpawn);
+            int garbageSpawned = Mathf.Min(GarbageQueue, MaxGarbageSpawn);
             RaiseGarbage(garbageSpawned);
-            garbageQueue -= garbageSpawned;
+            GarbageQueue -= garbageSpawned;
         }
     }
 
     private int RaiseGarbage(int lines)
     {
-        lines = Mathf.Clamp(lines, 0, GameConsts.maxGarbageSpawn);
+        lines = Mathf.Clamp(lines, 0, MaxGarbageSpawn);
 
         if (lines == 0)
         {
             return 0;
         }
 
+        var grid = gameManager.grid;
         for (int y = currentTop - 1; y >= 0; y--)
         {
             for (int x = 0; x < gridWidth; x++)
@@ -92,6 +99,7 @@ public class GarbageHandler : MonoBehaviour
 
     private void PlaceGarbageLine(int y, int holeColumn)
     {
+        var grid = gameManager.grid;
         for (int x = 0; x < gridWidth; x++)
         {
             if (x == holeColumn)

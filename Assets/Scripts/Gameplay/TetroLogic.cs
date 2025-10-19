@@ -87,7 +87,7 @@ public class TetroLogic : MonoBehaviour
 
     void Update()
     {
-        if (GameManager.gameFinished)
+        if (GameManager.gameEnded)
         {
             return;
         }
