@@ -36,12 +36,10 @@ public class GameManager : MonoBehaviour
     private float previousRTime;
     private float previousFTime;
     private KeyCode restart;
-    private KeyCode forfeit;
+    private KeyCode forfeit = GameConsts.forfeit;
 
     private float countDown = GameConsts.startCountdown;
     public bool started = false;
-
-    private List<GameObject> queueObj = new List<GameObject>();
     public GarbageHandler garbageHandler;
 
     [SerializeField] public ControlConfig ctrlCfg;
@@ -59,7 +57,6 @@ public class GameManager : MonoBehaviour
         preview.ShowHold(onHold);
 
         restart = ctrlCfg.restart;
-        forfeit = ctrlCfg.forfeit;
     }
 
     private void Start()

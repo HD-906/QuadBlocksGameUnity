@@ -9,6 +9,9 @@ public class MainMenuController : MonoBehaviour
     [Header("Buttons in display order (top to bottom)")]
     [SerializeField] private Button[] buttons; // size = 4
     [SerializeField] private Button backButton;
+    [SerializeField] private GameObject menuRoot;
+    [SerializeField] private GameObject configRoot;
+    [SerializeField] private KeybindMenu keybindMenu;
 
     private bool escLock = false;
     
@@ -26,7 +29,7 @@ public class MainMenuController : MonoBehaviour
                 ShowMultiPlayer();
                 escLock = true;
                 break;
-            case MenuPage.Settings:
+            case MenuPage.Config:
                 ShowConfig();
                 escLock = true;
                 break;
@@ -56,6 +59,8 @@ public class MainMenuController : MonoBehaviour
     public void ShowMain()
     {
         ClearAll();
+        configRoot.SetActive(false);
+        menuRoot.SetActive(true);
 
         Set(0, "Single Player", ShowSinglePlayer);
         Set(1, "Multi Player",  ShowMultiPlayer);
@@ -112,12 +117,16 @@ public class MainMenuController : MonoBehaviour
 
     void ShowConfig()
     {
-        // SceneManager.LoadScene("Settings");
+        ClearAll(); 
+        menuRoot.SetActive(false);
+        configRoot.SetActive(true);
 
         if (Bootstrap.I)
         {
-            Bootstrap.I.nextMenuPage = MenuPage.Settings;
+            Bootstrap.I.nextMenuPage = MenuPage.Config;
         }
+
+        backButton.gameObject.SetActive(true);
     }
 
     void OnCustom()
