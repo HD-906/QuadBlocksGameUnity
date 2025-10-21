@@ -11,7 +11,6 @@ public class MainMenuController : MonoBehaviour
     [SerializeField] private Button backButton;
     [SerializeField] private GameObject menuRoot;
     [SerializeField] private GameObject configRoot;
-    [SerializeField] private KeybindMenu keybindMenu;
 
     private bool escLock = false;
     
@@ -80,6 +79,8 @@ public class MainMenuController : MonoBehaviour
     void ShowSinglePlayer()
     {
         ClearAll();
+        configRoot.SetActive(false);
+        menuRoot.SetActive(true);
 
         buttons[3].gameObject.SetActive(true);
 

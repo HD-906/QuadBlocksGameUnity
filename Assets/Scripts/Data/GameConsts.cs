@@ -27,6 +27,9 @@ public static class GameConsts
 
     public const KeyCode forfeit = KeyCode.Escape;
 
+    public static Color configLabelColorDefault = Color.black;
+    public static Color configLabelColorConflicted = Color.red;
+
     [Header("Defaults Controls")]
     public static readonly ControlBindings DefaultsSingle = new ControlBindings
     {
