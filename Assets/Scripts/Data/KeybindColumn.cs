@@ -11,7 +11,7 @@ public class KeybindColumn : MonoBehaviour
     [SerializeField] private ControlConfig controlConfig;
     [SerializeField] private int controlType; // 0, 1, 2 for SinglePlayer, MP1 and MP2 respectively
     private ControlBindings defaultBindings;
-    TMP_Text[] buttonLabels;
+    public TMP_Text[] buttonLabels;
 
     UnityAction refreshAll;
 
@@ -63,21 +63,23 @@ public class KeybindColumn : MonoBehaviour
         buttonLabels = buttons.Select(b => b.GetComponentInChildren<TMP_Text>(true)).ToArray();
     }
 
-    public bool FindAndTurnConflictRed(KeyCode key, string original)
+    public bool FindAndTurnConflictRed(KeyCode key, TMP_Text keyLabelTMP)
     {
+        string originalLabel = keyLabelTMP.text;
         bool found = false;
-        string keyLabel = key.ToString();
+        string newLabel = key.ToString();
         TMP_Text onlyConflicted = null;
         bool wasUnique = true;
 
         foreach (TMP_Text label in buttonLabels)
         {
-            if (label?.text == keyLabel)
+            if (label?.text == newLabel)
             {
                 label.color = GameConsts.configLabelColorConflicted;
                 found = true;
             }
-            if (label?.text == original)
+
+            if (label?.text == originalLabel && label != keyLabelTMP)
             {
                 if (wasUnique)
                 {

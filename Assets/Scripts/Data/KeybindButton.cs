@@ -122,7 +122,7 @@ public class KeybindButton : MonoBehaviour
             binding = false;
             return;
         }
-        bool conflict = column.FindAndTurnConflictRed(keyCode, keyLabel.text);
+        bool conflict = column.FindAndTurnConflictRed(keyCode, keyLabel);
         SetConflictColour(conflict);
         if (conflict)
         {
