@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] public int level = 1;
     [SerializeField] private InFieldStatus fieldStatus;
     [SerializeField] TMP_Text countDownText;
+    [SerializeField] TMP_Text bottomInfo;
 
     [HideInInspector] public ModeManager modeManager;
     [HideInInspector] public bool is_2P;
@@ -67,6 +68,8 @@ public class GameManager : MonoBehaviour
         countDownText.gameObject.SetActive(true);
         Time.timeScale = 1f;
         gameOverTriggered = false;
+        bottomInfo.text = $"Press and hold {restart} to restart\n" +
+                          $"Press and hold esc to end game";
     }
 
     void Update()
@@ -92,6 +95,12 @@ public class GameManager : MonoBehaviour
             countDownText.text = "YOU WIN!";
             countDownText.gameObject.SetActive(true);
             Time.timeScale = 0f;
+        }
+
+        if (gameEnded)
+        {
+            bottomInfo.text = $"Press R to restart\n" +
+                              $"Press esc to end game";
         }
     }
 
