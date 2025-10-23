@@ -18,7 +18,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] float cellSize = GameConsts.CellSize;
     [SerializeField] public int level = 1;
     [SerializeField] private InFieldStatus fieldStatus;
-    [SerializeField] TMP_Text countDownText;
+    [SerializeField] TMP_Text centralText;
+    [SerializeField] TMP_Text centralText1;
+    [SerializeField] TMP_Text centralText2;
     [SerializeField] TMP_Text bottomInfo;
 
     [HideInInspector] public ModeManager modeManager;
@@ -34,8 +36,8 @@ public class GameManager : MonoBehaviour
     public bool lastPieceHarddroped = true;
     private float holdTime = GameConsts.holdTime;
 
-    private float previousRTime;
-    private float previousFTime;
+    private float previousRTime = -1f;
+    private float previousFTime = -1f;
     private KeyCode restart;
     private KeyCode forfeit = GameConsts.forfeit;
 
@@ -64,8 +66,9 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        countDownText.fontSize = 42;
-        countDownText.gameObject.SetActive(true);
+        centralText.fontSize = 42;
+        centralText.gameObject.SetActive(true);
+        centralText2.gameObject.SetActive(false);
         Time.timeScale = 1f;
         gameOverTriggered = false;
         bottomInfo.text = $"Press and hold {restart} to restart\n" +
@@ -77,23 +80,23 @@ public class GameManager : MonoBehaviour
         if (!started)
         {
             countDown -= Time.deltaTime;
-            countDownText.text = $"{(int)(countDown + 1)}";
+            centralText.text = $"{(int)(countDown + 1)}";
             if (countDown <= 0)
             {
                 SpawnNextTetromino();
                 started = true;
-                countDownText.text = "";
-                countDownText.fontSize = 14;
-                countDownText.gameObject.SetActive(false);
+                centralText.text = "";
+                centralText.gameObject.SetActive(false);
             }
         }
-        ExecuteWhenHeld(restart, ref previousRTime, RestartGame);
-        ExecuteWhenHeld(forfeit, ref previousFTime, ForfeitGame);
+        ExecuteWhenHeld(restart, ref previousRTime, RestartGame, "Restarting", true);
+        ExecuteWhenHeld(forfeit, ref previousFTime, ForfeitGame, "Exiting", false);
 
         if (gameEnded && !gameOverTriggered)
         {
-            countDownText.text = "YOU WIN!";
-            countDownText.gameObject.SetActive(true);
+            centralText.fontSize = 14;
+            centralText.text = "YOU WIN!";
+            centralText.gameObject.SetActive(true);
             Time.timeScale = 0f;
         }
 
@@ -104,16 +107,43 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void ExecuteWhenHeld(KeyCode key, ref float previousTime, System.Action act)
+    private void ExecuteWhenHeld(KeyCode key, ref float previousTime, System.Action act, string str, bool first)
     {
+        TMP_Text tmpText = first ? centralText1 : centralText2;
         if (Input.GetKeyDown(key))
         {
             previousTime = Time.time;
+            tmpText.text = str;
+            tmpText.fontSize = 8;
+            tmpText.gameObject.SetActive(true);
         }
 
-        if (Input.GetKey(key) && Time.time - previousTime > holdTime)
+        if (previousTime < 0)
         {
-            act();
+            return;
+        }
+
+        if (Input.GetKey(key))
+        {
+            float timeHeld = Time.time - previousTime;
+            if (timeHeld > holdTime)
+            {
+                act();
+                tmpText.text = "";
+                tmpText.fontSize = 8;
+                tmpText.gameObject.SetActive(false);
+            }
+            else
+            {
+                tmpText.fontSize = 6 + 10 * timeHeld / holdTime;
+            }
+        }
+
+        if (Input.GetKeyUp(key))
+        {
+            tmpText.text = "";
+            tmpText.fontSize = 8;
+            tmpText.gameObject.SetActive(false);
         }
     }
 
@@ -302,14 +332,19 @@ public class GameManager : MonoBehaviour
         return cleared;
     }
 
+    public int RemoveGarbageFromQueue(int toRemove)
+    {
+        return garbageHandler.RemoveGarbageFromQueue(toRemove);
+    }
+
     public void AddGarbageToQueue(int toAdd)
     {
         garbageHandler.AddGarbageToQueue(toAdd);
     }
 
-    public int RemoveGarbageFromQueue(int toRemove)
+    public void AddGarbageToQueueDelayed(int toAdd)
     {
-        return garbageHandler.RemoveGarbageFromQueue(toRemove);
+        garbageHandler.AddGarbageToQueueDelayed(toAdd);
     }
 
     public void RaiseGarbage()
@@ -332,8 +367,9 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
-        countDownText.text = "GAME OVER";
-        countDownText.gameObject.SetActive(true);
+        centralText.fontSize = 14;
+        centralText.text = "GAME OVER";
+        centralText.gameObject.SetActive(true);
         Time.timeScale = 0f;
         gameOverTriggered = true;
         gameEnded = true;
@@ -341,8 +377,9 @@ public class GameManager : MonoBehaviour
 
     public void GameCleared(string message) // shows message (time)
     {
-        countDownText.text = $"GAME CLEARED\n{message}";
-        countDownText.gameObject.SetActive(true);
+        centralText.fontSize = 14;
+        centralText.text = $"GAME CLEARED\n{message}";
+        centralText.gameObject.SetActive(true);
         Time.timeScale = 0f;
         gameOverTriggered = true;
         gameEnded = true;
@@ -350,8 +387,9 @@ public class GameManager : MonoBehaviour
 
     public void GameCleared() // shows score
     {
-        countDownText.text = $"GAME SCORE\n{fieldStatus.GetScore().ToString("#,#")}";
-        countDownText.gameObject.SetActive(true);
+        centralText.fontSize = 14;
+        centralText.text = $"GAME SCORE\n{fieldStatus.GetScore().ToString("#,#")}";
+        centralText.gameObject.SetActive(true);
         Time.timeScale = 0f;
         gameOverTriggered = true;
         gameEnded = true;

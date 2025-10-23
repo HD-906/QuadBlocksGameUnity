@@ -68,10 +68,10 @@ public class TetroLogic : MonoBehaviour
         {
             lockDelayTime -= (gameManager.level - 19f) / 30f;
         }
-        arr = ctrlCfg.arr / ctrlCfg.frameRate;
-        das = ctrlCfg.das / ctrlCfg.frameRate;
-        dcd = ctrlCfg.dcd / ctrlCfg.frameRate;
-        sdf = ctrlCfg.sdf;
+        arr = GameConsts.arr / GameConsts.frameRate;
+        das = GameConsts.das / GameConsts.frameRate;
+        dcd = GameConsts.dcd / GameConsts.frameRate;
+        sdf = GameConsts.sdf;
 
         multiplier = gravity;
 

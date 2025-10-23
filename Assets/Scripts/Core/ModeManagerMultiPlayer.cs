@@ -45,16 +45,16 @@ public class ModeManagerMultiPlayer : ModeManager
     {
         if (is_2P)
         {
-            gameManager_1.AddGarbageToQueue(10);
+            gameManager_1.AddGarbageToQueueDelayed(10);
         }
         else
         {
-            gameManager_2.AddGarbageToQueue(10);
+            gameManager_2.AddGarbageToQueueDelayed(10);
         }
     }
 
     public override int GetGarbage(bool is_2P, int linesCleared, int tSpinStatus, bool backToBack, int combo)
-    { // To be finished
+    {
         int garbage = 0;
         if (tSpinStatus < 2)
         {
@@ -94,6 +94,6 @@ public class ModeManagerMultiPlayer : ModeManager
     private void HandleGarbage(GameManager sender, GameManager receiver, int garbage)
     {
         garbage = sender.RemoveGarbageFromQueue(garbage);
-        receiver.AddGarbageToQueue(garbage);
+        receiver.AddGarbageToQueueDelayed(garbage);
     }
 }

@@ -20,9 +20,3 @@ MonoBehaviour:
   rotateRight: 120
   hold: 32
   restart: 105
-  forfeit: 27
-  arr: 2
-  das: 10
-  dcd: 1
-  sdf: 6
-  frameRate: 60

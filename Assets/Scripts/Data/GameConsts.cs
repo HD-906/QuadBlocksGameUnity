@@ -27,6 +27,7 @@ public static class GameConsts
 
     public const int maxGarbageSpawn = 10;
     public const int maxGarbage = 40;
+    public const float garbageDelay = 0.3f;
 
     public const KeyCode forfeit = KeyCode.Escape;
 

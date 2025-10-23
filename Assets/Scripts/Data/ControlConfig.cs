@@ -16,11 +16,4 @@ public class ControlConfig : ScriptableObject
         hold = b.hold; 
         restart = b.restart;
     }
-
-    [Header("Handling")]
-    public float arr = 2f;
-    public float das = 10f;
-    public float dcd = 1f;
-    public int sdf = 6;
-    public float frameRate = 60f;
 }

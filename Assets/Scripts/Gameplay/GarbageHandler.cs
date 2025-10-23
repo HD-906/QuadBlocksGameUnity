@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class GarbageHandler : MonoBehaviour
@@ -20,24 +21,47 @@ public class GarbageHandler : MonoBehaviour
             OnChanged?.Invoke(value);
         }
     }
+    private int garbageBuffer = 0;
 
     public const int gridWidth = GameConsts.GridWidth;
     public const int gridHeight = GameConsts.GridHeight;
 
-    public void AddGarbageToQueue(int toAdd)
+    public void AddGarbageToQueue(int value)
     {
-        GarbageQueue += Mathf.Max(toAdd, 0);
+        GarbageQueue += Mathf.Max(value, 0);
     }
 
-    public int RemoveGarbageFromQueue(int toRemove)
+    public void AddGarbageToQueueDelayed(int value)
     {
-        if (toRemove < 0)
+        garbageBuffer += Mathf.Max(value, 0);
+        StartCoroutine(TransferAfterDelay(value));
+    }
+
+    private IEnumerator TransferAfterDelay(int value)
+    {
+        yield return new WaitForSeconds(GameConsts.garbageDelay);
+
+        int transferable = Mathf.Min(value, garbageBuffer);
+        if (transferable > 0)
+        {
+            AddGarbageToQueue(value);
+            garbageBuffer -= transferable;
+        }
+    }
+
+    public int RemoveGarbageFromQueue(int value)
+    {
+        if (value < 0)
         {
             return 0;
         }
-        int removed = Mathf.Min(toRemove, GarbageQueue);
+        int removed = Mathf.Min(value, GarbageQueue);
         GarbageQueue -= removed;
-        return toRemove - removed;
+
+        value -= removed;
+        removed = Mathf.Min(value, garbageBuffer);
+        garbageBuffer -= removed;
+        return value - removed;
     }
 
     public void RaiseGarbage(bool sticky)
