@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -10,7 +11,8 @@ public class KeybindColumn : MonoBehaviour
     [SerializeField] private ControlConfig controlConfig;
     [SerializeField] private int controlType; // 0, 1, 2 for SinglePlayer, MP1 and MP2 respectively
     private ControlBindings defaultBindings;
-    // private Button[] buttons;
+    private ControlBindings originalBindings;
+    private KeybindButton[] kbs;
     private TMP_Text[] buttonLabels;
 
     UnityAction refreshAll;
@@ -65,10 +67,21 @@ public class KeybindColumn : MonoBehaviour
             }
             i++;
         }
+
         buttonLabels = buttons
             .Take(buttons.Length - 1)
             .Select(b => b.GetComponentInChildren<TMP_Text>(true))
             .ToArray();
+
+        kbs = buttons
+            .Take(buttons.Length - 1)
+            .Select(b => b.gameObject.GetComponent<KeybindButton>())
+            .ToArray();
+    }
+
+    private void OnEnable()
+    {
+        originalBindings = GetBindings();
     }
 
     public bool FindAndToggleConflict(KeyCode newKey, TMP_Text keyLabelTMP)
@@ -128,5 +141,36 @@ public class KeybindColumn : MonoBehaviour
                 }
             }
         }
+    }
+
+    public bool HasConflict()
+    {
+        return kbs.Any(e => e.HasConflict());
+    }
+
+    public ControlBindings GetBindings()
+    {
+        if (kbs == null || kbs.Length < 8)
+        {
+            return GameConsts.None;
+        }
+
+        return new ControlBindings
+        {
+            moveLeft = kbs[0].KeyCode,
+            moveRight = kbs[1].KeyCode,
+            softDrop = kbs[2].KeyCode,
+            hardDrop = kbs[3].KeyCode,
+            rotateLeft = kbs[4].KeyCode,
+            rotateRight = kbs[5].KeyCode,
+            hold = kbs[6].KeyCode,
+            restart = kbs[7].KeyCode
+        };
+    }
+
+    public void RevertSettings()
+    {
+        controlConfig.Apply(originalBindings);
+        refreshAll?.Invoke();
     }
 }

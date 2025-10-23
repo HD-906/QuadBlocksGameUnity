@@ -13,7 +13,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private bool holdLocked = false;
     [SerializeField] public Transform[,] grid;
     [SerializeField] public bool gameOverTriggered = false;
-    [SerializeField] public static bool gameEnded = false;
     [SerializeField] private PreviewController preview;
     [SerializeField] Transform fieldOrigin;
     [SerializeField] float cellSize = GameConsts.CellSize;
@@ -24,6 +23,7 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public ModeManager modeManager;
     [HideInInspector] public bool is_2P;
 
+    public static bool gameEnded = false;
     private Vector2Int spawnPosition = GameConsts.SpawnCell;
 
     public const int gridWidth = GameConsts.GridWidth;
@@ -46,6 +46,7 @@ public class GameManager : MonoBehaviour
 
     void Awake()
     {
+        gameEnded = false;
         if (fieldOrigin == null)
         {
             fieldOrigin = transform;

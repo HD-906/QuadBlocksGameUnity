@@ -1,3 +1,4 @@
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,6 +11,7 @@ public class MainMenuController : MonoBehaviour
     [SerializeField] private Button backButton;
     [SerializeField] private GameObject menuRoot;
     [SerializeField] private GameObject configRoot;
+    [SerializeField] private GameObject popupPanel;
 
     private bool escLock = false;
     
@@ -37,7 +39,7 @@ public class MainMenuController : MonoBehaviour
                 break;
         }
 
-        backButton.onClick.AddListener(ShowMain);
+        backButton.onClick.AddListener(Back);
     }
 
     void Update()
@@ -58,6 +60,7 @@ public class MainMenuController : MonoBehaviour
     {
         ClearAll();
         configRoot.SetActive(false);
+        popupPanel.SetActive(false);
         menuRoot.SetActive(true);
 
         Set(0, "Single Player", ShowSinglePlayer);
@@ -70,15 +73,16 @@ public class MainMenuController : MonoBehaviour
         if (Bootstrap.I)
         {
             Bootstrap.I.nextMenuPage = MenuPage.Root;
-            Debug.Log("Set to root");
         }
     }
 
     // --------------- Single Player ---------------
     void ShowSinglePlayer()
     {
+        GameManager.gameEnded = false;
         ClearAll();
         configRoot.SetActive(false);
+        popupPanel.SetActive(false);
         menuRoot.SetActive(true);
 
         buttons[3].gameObject.SetActive(true);
@@ -99,6 +103,7 @@ public class MainMenuController : MonoBehaviour
     // --------------- Callbacks -------------------
     void ShowMultiPlayer()
     {
+        GameManager.gameEnded = false;
         StartMode(SceneNames.PlayfieldMulti, "Game_M_Modern");
         //ClearAll();
 
@@ -127,6 +132,34 @@ public class MainMenuController : MonoBehaviour
         }
 
         backButton.gameObject.SetActive(true);
+    }
+
+    void Back()
+    {
+        if (Bootstrap.I.nextMenuPage != MenuPage.Config)
+        {
+            ShowMain();
+            return;
+        }
+        KeybindRoot root = configRoot.GetComponent<KeybindRoot>();
+        bool hasConflict = root.keybindColumns.Any(e => e.HasConflict());
+        if (!hasConflict)
+        {
+            ShowMain();
+            return;
+        }
+
+        popupPanel.SetActive(true);
+    }
+
+    public void RevertSettingsAndBack()
+    {
+        KeybindRoot root = configRoot.GetComponent<KeybindRoot>();
+        foreach (KeybindColumn column in root.keybindColumns)
+        {
+            column.RevertSettings();
+        }
+        ShowMain();
     }
 
     void OnCustom()

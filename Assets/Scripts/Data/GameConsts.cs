@@ -62,16 +62,28 @@ public static class GameConsts
         softDrop = KeyCode.Keypad5,
         hardDrop = KeyCode.Keypad8,
         rotateLeft = KeyCode.Period,
-        rotateRight = KeyCode.Comma,
+        rotateRight = KeyCode.Slash,
         hold = KeyCode.RightControl,
         restart = KeyCode.Keypad0
+    };
+
+    public static readonly ControlBindings None = new ControlBindings
+    {
+        moveLeft = KeyCode.None,
+        moveRight = KeyCode.None,
+        softDrop = KeyCode.None,
+        hardDrop = KeyCode.None,
+        rotateLeft = KeyCode.None,
+        rotateRight = KeyCode.None,
+        hold = KeyCode.None,
+        restart = KeyCode.None
     };
 
     public const float gravity = 1.0f;
     public const float arr = 2.0f;
     public const float das = 10.0f;
     public const float dcd = 1.0f;
-    public const int sdf = 6;
+    public const int sdf = 20;
     public const float frameRate = 60f;
 
     public const float holdTime = 2f;

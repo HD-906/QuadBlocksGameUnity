@@ -9,7 +9,7 @@ public class KeybindButton : MonoBehaviour
 {
     private Button keyButton;
     private TMP_Text keyLabel;
-    private KeyCode keyCode;
+    public KeyCode KeyCode { get; private set; }
 
     private ControlConfig configs;
     private string internalName;
@@ -52,13 +52,13 @@ public class KeybindButton : MonoBehaviour
     public void RefreshLabel()
     {
         UpdateKeyCode();
-        keyLabel.text = keyCode.ToString();
+        keyLabel.text = KeyCode.ToString();
         keyLabel.fontSize = 14;
     }
 
     private void UpdateKeyCode()
     {
-        keyCode = (KeyCode)(configs.GetType().GetField(internalName)?.GetValue(configs) ?? KeyCode.None);
+        KeyCode = (KeyCode)(configs.GetType().GetField(internalName)?.GetValue(configs) ?? KeyCode.None);
     }
 
     private void StartBinding()
@@ -76,6 +76,11 @@ public class KeybindButton : MonoBehaviour
     public void SetConflictColour(bool conflict)
     {
         keyLabel.color = conflict ? GameConsts.configLabelColorConflicted : GameConsts.configLabelColorDefault;
+    }
+
+    public bool HasConflict()
+    {
+        return keyLabel.color == GameConsts.configLabelColorConflicted;
     }
 
     IEnumerator CaptureKey()
@@ -130,7 +135,7 @@ public class KeybindButton : MonoBehaviour
         bool conflict = column.FindAndToggleConflict(newKeyCode, keyLabel);
 
         keyLabel.text = newKeyCode.ToString();
-        keyCode = newKeyCode;
+        KeyCode = newKeyCode;
         if (conflict)
         {
             binding = false;
@@ -144,7 +149,7 @@ public class KeybindButton : MonoBehaviour
         var f = configs.GetType().GetField(internalName);
         if (f != null && f.FieldType == typeof(KeyCode))
         {
-            f.SetValue(configs, keyCode);
+            f.SetValue(configs, KeyCode);
         }
         binding = false;
         RefreshLabel();

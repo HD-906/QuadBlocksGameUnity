@@ -39,6 +39,7 @@ public class TetroLogic : MonoBehaviour
     private float previousRightDownTime = -1;
     private float previousLeftArrTime = -1;
     private float previousRightArrTime = -1;
+    private float softDropTime = -1;
     private int lowestY = 25;
     private int movementCount = 0;
     Tetromino tetr;
@@ -98,6 +99,16 @@ public class TetroLogic : MonoBehaviour
         }
 
         accumulator += Time.deltaTime;
+
+        if (Input.GetKeyDown(softDrop))
+        {
+            softDropTime = Time.time;
+        }
+
+        if (Input.GetKeyUp(softDrop))
+        {
+            softDropTime = -1;
+        }
 
         if (Input.GetKey(softDrop))
         {
@@ -211,12 +222,18 @@ public class TetroLogic : MonoBehaviour
     private void UpdateFrame()
     {
         float deltaTime = Time.time - previousTime;
+
         float fallTimeCurrent = fallTime / multiplier;
-        if (deltaTime > fallTimeCurrent)
+        float deltaTimeSoft = softDropTime > previousTime 
+            ? (softDropTime - previousTime) / multiplier + Time.time - softDropTime
+            : deltaTime;
+
+        bool dropped = false;
+        if (deltaTimeSoft > fallTimeCurrent)
         {
-            int toFallInit = (int) (deltaTime / fallTimeCurrent);
+            int toFallInit = (int) (deltaTimeSoft / fallTimeCurrent);
             int toFall = toFallInit;
-            bool dropped = true;
+            dropped = true;
             while (dropped && toFall-- > 0)
             {
                 dropped = tetr.Move(Vector3.down);
@@ -235,12 +252,14 @@ public class TetroLogic : MonoBehaviour
                     gameManager.AddScore(1);
                 }
             }
-            else if (deltaTime > lockDelayTime)
-            {
-                gameManager.UpdateLastMovementStatus(cancelLeft, cancelRight);
-                tetr.LockTetromino(lastRotated);
-                previousTime = Time.time;
-            }
+        }
+
+        if (!dropped && deltaTime > lockDelayTime && tetr.CheckGround())
+        {
+            gameManager.UpdateLastMovementStatus(cancelLeft, cancelRight);
+            tetr.LockTetromino(lastRotated);
+            previousTime = Time.time;
+            return;
         }
     }
 
