@@ -61,7 +61,7 @@ public class GarbageHandler : MonoBehaviour
         value -= removed;
         removed = Mathf.Min(value, garbageBuffer);
         garbageBuffer -= removed;
-        return value - removed;
+        return value - removed; // remaining to be sent
     }
 
     public void RaiseGarbage(bool sticky)

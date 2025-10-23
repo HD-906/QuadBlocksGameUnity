@@ -22,6 +22,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] TMP_Text centralText1;
     [SerializeField] TMP_Text centralText2;
     [SerializeField] TMP_Text bottomInfo;
+    [SerializeField] GameObject attackRefPoint;
+    [SerializeField] GameObject attackPrefab;
 
     [HideInInspector] public ModeManager modeManager;
     [HideInInspector] public bool is_2P;
@@ -334,7 +336,22 @@ public class GameManager : MonoBehaviour
 
     public int RemoveGarbageFromQueue(int toRemove)
     {
-        return garbageHandler.RemoveGarbageFromQueue(toRemove);
+        int toSend = garbageHandler.RemoveGarbageFromQueue(toRemove);
+        if (toSend > 0)
+        {
+            SpawnAttack(toSend);
+        }
+        return toSend;
+    }
+
+    private void SpawnAttack(int num)
+    {
+        var refTransform = attackRefPoint.transform;
+        for (; num > 0; num--)
+        {
+            Quaternion rot = refTransform.rotation * Quaternion.Euler(0f, 0f, Random.value * 5f);
+            Instantiate(attackPrefab, refTransform.position, rot);
+        }
     }
 
     public void AddGarbageToQueue(int toAdd)
