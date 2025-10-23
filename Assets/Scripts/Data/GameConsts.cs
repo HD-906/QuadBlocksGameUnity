@@ -15,6 +15,9 @@ public static class GameConsts
     public const float CellSize = 1f;
 
     public const int sprintLines = 40;
+    public static readonly int[] drillingLines = {
+        50, 100, 200, 500
+    };
     public const int blitzTimeCentiSec = 12000;
     public const float softdropSpeed = 20f;
     public const int maxDelayMovement = 15;
@@ -92,9 +95,15 @@ public static class GameConsts
     public const string modeSprint  = "Sprint";
     public const string modeBlitz = "Blitz";
     public const string modeMarathon = "Marathon";
+    public const string modeDrilling = "Drilling";
+    public const string modeBattle = "Battle";
+
+    [Header("Race Mode Interval")]
+    public static readonly int[] DrillingGarbageInterval = { 
+        20, 12, 7, 4 
+    };
 
     [Header("Combo Garbage List")]
-
     private static readonly int[] linesByCombo = {
         0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 4, 4, 4, 5
     };

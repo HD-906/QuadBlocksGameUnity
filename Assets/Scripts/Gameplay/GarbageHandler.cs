@@ -40,17 +40,17 @@ public class GarbageHandler : MonoBehaviour
         return toRemove - removed;
     }
 
-    public void RaiseGarbage()
+    public void RaiseGarbage(bool sticky)
     {
         if (GarbageQueue > 0)
         {
             int garbageSpawned = Mathf.Min(GarbageQueue, MaxGarbageSpawn);
-            RaiseGarbage(garbageSpawned);
+            RaiseGarbage(garbageSpawned, sticky);
             GarbageQueue -= garbageSpawned;
         }
     }
 
-    private int RaiseGarbage(int lines)
+    private int RaiseGarbage(int lines, bool sticky)
     {
         lines = Mathf.Clamp(lines, 0, MaxGarbageSpawn);
 
@@ -74,26 +74,28 @@ public class GarbageHandler : MonoBehaviour
         }
         currentTop += lines;
 
-        int holeCol = PlaceGarbageLineRand();
+        int holeCol = PlaceGarbageLineRand(0);
         for (int y = 1; y < lines; y++)
         {
-            holeCol = PlaceGarbageLineRand(y, holeCol);
+            holeCol = sticky 
+                ? PlaceGarbageLineRandSticky(y, holeCol)
+                : PlaceGarbageLineRand(y);
         }
 
         return lines;
     }
 
-    private int PlaceGarbageLineRand(int y, int holeCol)
+    private int PlaceGarbageLineRand(int y)
     {
-        holeCol = Random.value < 0.7 ? holeCol : Random.Range(0, gridWidth - 1);
+        int holeCol = Random.Range(0, gridWidth - 1);
         PlaceGarbageLine(y, holeCol);
         return holeCol;
     }
 
-    private int PlaceGarbageLineRand()
+    private int PlaceGarbageLineRandSticky(int y, int holeCol)
     {
-        int holeCol = Random.Range(0, gridWidth - 1);
-        PlaceGarbageLine(0, holeCol);
+        holeCol = Random.value < 0.7 ? holeCol : Random.Range(0, gridWidth - 1);
+        PlaceGarbageLine(y, holeCol);
         return holeCol;
     }
 

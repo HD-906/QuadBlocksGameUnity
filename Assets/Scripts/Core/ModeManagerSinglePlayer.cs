@@ -15,6 +15,8 @@ public class ModeManagerSinglePlayer : ModeManager
     [SerializeField] public GameManager gameManager;
     private bool started = false;
     private float timeStart = 0;
+    private int garbageInterval = -1;
+    private int lastGarbageTime = -1; // in 1/100th second
 
     private System.Action<int> updateAction;
 
@@ -25,6 +27,11 @@ public class ModeManagerSinglePlayer : ModeManager
             SceneData.selectedMode = GameConsts.modeBlitz;
         }
         modeName.text = SceneData.selectedMode;
+
+        if (SceneData.selectedMode == GameConsts.modeDrilling)
+        {
+            garbageInterval = 100 * GameConsts.DrillingGarbageInterval[SceneData.difficulty];
+        }
         InitCondition();
         timeStart = Time.time;
     }
@@ -66,6 +73,13 @@ public class ModeManagerSinglePlayer : ModeManager
                 timeValue = timeValueInitial = 0;
                 condition.text = $"Level {condValue}\n{TimeToString()}";
                 updateAction = UpdateConditionMarathon;
+                break;
+            case GameConsts.modeDrilling:
+                InitSprintLines = condValue = GameConsts.drillingLines[SceneData.difficulty];
+                timeValue = timeValueInitial = 0;
+                condition.text = $"{TimeToString()}\nRemaining: {condValue}";
+                updateAction = UpdateConditionDrilling;
+                gameManager.sticky = false;
                 break;
             default:
                 break;
@@ -117,6 +131,23 @@ public class ModeManagerSinglePlayer : ModeManager
 
         currentLevel = totalLinesCleared / 10 + 1;
         gameManager.level = currentLevel;
+    }
+
+    private void UpdateConditionDrilling(int timePassed)
+    {
+        condValue = Mathf.Max(0, InitSprintLines - totalLinesCleared);
+        timeValue = timeValueInitial + timePassed;
+        condition.text = $"{TimeToString()}\nRemaining: {condValue}";
+        if (condValue <= 0)
+        {
+            gameManager.GameCleared(TimeToString());
+        }
+
+        if (timePassed > lastGarbageTime + garbageInterval)
+        {
+            gameManager.AddGarbageToQueue(1);
+            lastGarbageTime = (timePassed / garbageInterval) * garbageInterval;
+        }
     }
 
     public override void AddLinesCleared(int linesCleared)

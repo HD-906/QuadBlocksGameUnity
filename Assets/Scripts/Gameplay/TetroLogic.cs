@@ -28,7 +28,7 @@ public class TetroLogic : MonoBehaviour
     private bool firstLeftDown = false;
     private bool firstRightDown = false;
     private float fallTime = 0.5f;
-    private float lockDelayTime = GameConsts.lockDelayTime;
+    private float lockDelayTime;
     private float harddropEnableTime = GameConsts.harddropEnableTime;
     private float startTime;
     private GameObject ghostGO;
@@ -62,7 +62,12 @@ public class TetroLogic : MonoBehaviour
     {
         ControlConfig ctrlCfg = gameManager.ctrlCfg;
 
-        gravity = 1 / getIntervalFromLevel(gameManager.level);
+        gravity = 1 / getIntervalFromLevel();
+        lockDelayTime = GameConsts.lockDelayTime;
+        if (gameManager.level >= 20)
+        {
+            lockDelayTime -= (gameManager.level - 19f) / 30f;
+        }
         arr = ctrlCfg.arr / ctrlCfg.frameRate;
         das = ctrlCfg.das / ctrlCfg.frameRate;
         dcd = ctrlCfg.dcd / ctrlCfg.frameRate;
@@ -376,9 +381,9 @@ public class TetroLogic : MonoBehaviour
         cancelRight = statusRight;
     }
 
-    protected float getIntervalFromLevel(int level)
+    private float getIntervalFromLevel()
     {
-        return Mathf.Pow((float)(0.8 - (level - 1) * 0.007), level - 1);
+        return Mathf.Pow((float)(0.8 - (gameManager.level - 1) * 0.007), gameManager.level - 1);
     }
 
     void CreateGhost()

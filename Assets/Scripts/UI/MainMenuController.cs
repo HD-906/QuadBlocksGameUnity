@@ -33,6 +33,10 @@ public class MainMenuController : MonoBehaviour
                 ShowConfig();
                 escLock = true;
                 break;
+            case MenuPage.Drilling:
+                ShowDrilling();
+                escLock = true;
+                break;
             case MenuPage.Root: // falls down to default
             default:
                 ShowMain();
@@ -87,10 +91,10 @@ public class MainMenuController : MonoBehaviour
 
         buttons[3].gameObject.SetActive(true);
 
-        Set(0, "Sprint", () => StartMode(SceneNames.PlayfieldSingle, GameConsts.modeSprint));
-        Set(1, "Blitz", () => StartMode(SceneNames.PlayfieldSingle, GameConsts.modeBlitz));
+        Set(0, "Sprint",   () => StartMode(SceneNames.PlayfieldSingle, GameConsts.modeSprint));
+        Set(1, "Blitz",    () => StartMode(SceneNames.PlayfieldSingle, GameConsts.modeBlitz));
         Set(2, "Marathon", () => StartMode(SceneNames.PlayfieldSingle, GameConsts.modeMarathon));
-        Set(3, "Custom", OnCustom);
+        Set(3, "Drilling", ShowDrilling);
 
         if (Bootstrap.I)
         {
@@ -100,24 +104,34 @@ public class MainMenuController : MonoBehaviour
         backButton.gameObject.SetActive(true);
     }
 
+    void ShowDrilling()
+    {
+        GameManager.gameEnded = false;
+        ClearAll();
+        configRoot.SetActive(false);
+        popupPanel.SetActive(false);
+        menuRoot.SetActive(true);
+
+        buttons[3].gameObject.SetActive(true);
+
+        Set(0, "Easy",      () => StartMode(SceneNames.PlayfieldSingle, GameConsts.modeDrilling, 0));
+        Set(1, "Normal",    () => StartMode(SceneNames.PlayfieldSingle, GameConsts.modeDrilling, 1));
+        Set(2, "Hard",      () => StartMode(SceneNames.PlayfieldSingle, GameConsts.modeDrilling, 2));
+        Set(3, "Very Hard", () => StartMode(SceneNames.PlayfieldSingle, GameConsts.modeDrilling, 3));
+
+        if (Bootstrap.I)
+        {
+            Bootstrap.I.nextMenuPage = MenuPage.Drilling;
+        }
+
+        backButton.gameObject.SetActive(true);
+    }
+
     // --------------- Callbacks -------------------
     void ShowMultiPlayer()
     {
         GameManager.gameEnded = false;
-        StartMode(SceneNames.PlayfieldMulti, "Game_M_Modern");
-        //ClearAll();
-
-        //buttons[2].gameObject.SetActive(true);
-
-        //Set(0, "Classic", () => StartMode(SceneNames.PlayfieldMulti, "Game_M_Classic"));
-        //Set(1, "Modern", () => StartMode(SceneNames.PlayfieldMulti, "Game_M_Modern"));
-
-        //if (Bootstrap.I)
-        //{
-        //    Bootstrap.I.nextMenuPage = MenuPage.MultiPlayer;
-        //}
-
-        //backButton.gameObject.SetActive(true);
+        StartMode(SceneNames.PlayfieldMulti, GameConsts.modeBattle);
     }
 
     void ShowConfig()
@@ -138,9 +152,15 @@ public class MainMenuController : MonoBehaviour
     {
         if (Bootstrap.I.nextMenuPage != MenuPage.Config)
         {
+            if (Bootstrap.I.nextMenuPage == MenuPage.Drilling)
+            {
+                ShowSinglePlayer();
+                return;
+            }
             ShowMain();
             return;
         }
+
         KeybindRoot root = configRoot.GetComponent<KeybindRoot>();
         bool hasConflict = root.keybindColumns.Any(e => e.HasConflict());
         if (!hasConflict)
@@ -162,14 +182,17 @@ public class MainMenuController : MonoBehaviour
         ShowMain();
     }
 
-    void OnCustom()
+    void StartMode(string scene, string sceneName, int difficulty)
     {
-        Debug.Log("Custom clicked");
+        SceneData.selectedMode = sceneName;
+        SceneData.difficulty = difficulty;
+        SceneManager.LoadScene(scene);
     }
 
     void StartMode(string scene, string sceneName)
     {
         SceneData.selectedMode = sceneName;
+        SceneData.difficulty = -1;
         SceneManager.LoadScene(scene);
     }
 

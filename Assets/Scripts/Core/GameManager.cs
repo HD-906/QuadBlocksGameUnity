@@ -41,6 +41,7 @@ public class GameManager : MonoBehaviour
     private float countDown = GameConsts.startCountdown;
     public bool started = false;
     public GarbageHandler garbageHandler;
+    public bool sticky = true;
 
     [SerializeField] public ControlConfig ctrlCfg;
 
@@ -92,8 +93,6 @@ public class GameManager : MonoBehaviour
             countDownText.gameObject.SetActive(true);
             Time.timeScale = 0f;
         }
-
-        Testing(); // for debug testing
     }
 
     private void ExecuteWhenHeld(KeyCode key, ref float previousTime, System.Action act)
@@ -122,6 +121,7 @@ public class GameManager : MonoBehaviour
 
     private void InstantiateNewMino(GameObject prefabObj)
     {
+        level = Mathf.Clamp(level, 1, 30);
         var pos = CellToWorld(spawnPosition);
         var newMino = Instantiate(prefabObj, pos, Quaternion.identity);
         Tetromino tetr = newMino.GetComponent<Tetromino>();
@@ -305,16 +305,7 @@ public class GameManager : MonoBehaviour
 
     public void RaiseGarbage()
     {
-        garbageHandler.RaiseGarbage();
-    }
-
-    private void Testing() // for debug testing
-    {
-        if (Input.GetKeyDown(KeyCode.KeypadEnter))
-        {
-            Debug.Log("Adding Garbage");
-            garbageHandler.AddGarbageToQueue(1);
-        }
+        garbageHandler.RaiseGarbage(sticky);
     }
 
     public void AddScore(int toAdd)
