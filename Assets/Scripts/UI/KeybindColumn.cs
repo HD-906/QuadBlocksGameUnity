@@ -71,12 +71,12 @@ public class KeybindColumn : MonoBehaviour
             .ToArray();
     }
 
-    public bool FindAndToggleConflict(KeyCode newKey, TMP_Text keyLabelTMP) // Remove includeOtr for new Appr
+    public bool FindAndToggleConflict(KeyCode newKey, TMP_Text keyLabelTMP)
     {
         return FindAndToggleConflict(newKey.ToString(), keyLabelTMP);
     }
 
-    public bool FindAndToggleConflict(string newLabel, TMP_Text keyLabelTMP) // Remove includeOtr for new Appr
+    public bool FindAndToggleConflict(string newLabel, TMP_Text keyLabelTMP)
     {
         string originalLabel = keyLabelTMP.text;
         bool found = false;

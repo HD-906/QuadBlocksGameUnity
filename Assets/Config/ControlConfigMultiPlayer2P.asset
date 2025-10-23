@@ -17,10 +17,9 @@ MonoBehaviour:
   softDrop: 261
   hardDrop: 264
   rotateLeft: 46
-  rotateRight: 47
+  rotateRight: 44
   hold: 305
-  restart: 105
-  forfeit: 27
+  restart: 256
   arr: 2
   das: 10
   dcd: 1
