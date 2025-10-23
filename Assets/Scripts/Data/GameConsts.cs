@@ -64,7 +64,7 @@ public static class GameConsts
         rotateLeft = KeyCode.Period,
         rotateRight = KeyCode.Comma,
         hold = KeyCode.RightControl,
-        restart = KeyCode.I
+        restart = KeyCode.Keypad0
     };
 
     public const float gravity = 1.0f;

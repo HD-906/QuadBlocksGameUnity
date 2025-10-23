@@ -3,13 +3,13 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class KeybindButton : MonoBehaviour
 {
     private Button keyButton;
     private TMP_Text keyLabel;
+    private KeyCode keyCode;
 
     private ControlConfig configs;
     private string internalName;
@@ -44,19 +44,24 @@ public class KeybindButton : MonoBehaviour
         keyButton = btn;
         keyLabel = btn.GetComponentInChildren<TMP_Text>();
         internalName = name;
+        UpdateKeyCode();
         buttonRect = keyButton.transform as RectTransform;
     }
 
 
     public void RefreshLabel()
     {
-        var field = configs.GetType().GetField(internalName);
-        var key = (KeyCode)(field?.GetValue(configs) ?? KeyCode.None);
-        keyLabel.text = key.ToString();
+        UpdateKeyCode();
+        keyLabel.text = keyCode.ToString();
         keyLabel.fontSize = 14;
     }
 
-    void StartBinding()
+    private void UpdateKeyCode()
+    {
+        keyCode = (KeyCode)(configs.GetType().GetField(internalName)?.GetValue(configs) ?? KeyCode.None);
+    }
+
+    private void StartBinding()
     {
         if (binding)
         {
@@ -68,7 +73,7 @@ public class KeybindButton : MonoBehaviour
         StartCoroutine(CaptureKey());
     }
 
-    void SetConflictColour(bool conflict)
+    public void SetConflictColour(bool conflict)
     {
         keyLabel.color = conflict ? GameConsts.configLabelColorConflicted : GameConsts.configLabelColorDefault;
     }
@@ -115,30 +120,26 @@ public class KeybindButton : MonoBehaviour
         }
     }
 
-    void ApplyKeyUnique(KeyCode keyCode)
+    private void ApplyKeyUnique(KeyCode newKeyCode)
     {
-        if (keyCode.ToString() == keyLabel.text)
+        if (newKeyCode.ToString() == keyLabel.text) // set to the same key
         {
             binding = false;
             return;
         }
-        bool conflict = column.FindAndTurnConflictRed(keyCode, keyLabel);
-        SetConflictColour(conflict);
+        bool conflict = column.FindAndToggleConflict(newKeyCode, keyLabel);
+
+        keyLabel.text = newKeyCode.ToString();
+        keyCode = newKeyCode;
         if (conflict)
         {
-            keyLabel.text = keyCode.ToString();
             binding = false;
             return;
         }
-        ApplyKey(keyCode);
+        ApplyKey();
     }
 
     public void ApplyKey()
-    {
-        ApplyKey(GetKeyCodeFromLabel());
-    }
-
-    void ApplyKey(KeyCode keyCode)
     {
         var f = configs.GetType().GetField(internalName);
         if (f != null && f.FieldType == typeof(KeyCode))
@@ -149,22 +150,9 @@ public class KeybindButton : MonoBehaviour
         RefreshLabel();
     }
 
-    void CancelBinding()
+    private void CancelBinding()
     {
         binding = false;
         RefreshLabel();
-    }
-
-    private KeyCode GetKeyCodeFromLabel()
-    {
-        if (System.Enum.TryParse(keyLabel.text, out KeyCode code))
-        {
-            return code;
-        }
-        else
-        {
-            Debug.LogWarning("Invalid KeyCode string: " + keyLabel.text);
-            return KeyCode.None;
-        }
     }
 }

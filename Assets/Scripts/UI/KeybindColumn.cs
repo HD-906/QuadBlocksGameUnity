@@ -3,7 +3,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using static UnityEngine.GraphicsBuffer;
 
 public class KeybindColumn : MonoBehaviour
 {
@@ -11,7 +10,8 @@ public class KeybindColumn : MonoBehaviour
     [SerializeField] private ControlConfig controlConfig;
     [SerializeField] private int controlType; // 0, 1, 2 for SinglePlayer, MP1 and MP2 respectively
     private ControlBindings defaultBindings;
-    public TMP_Text[] buttonLabels;
+    // private Button[] buttons;
+    private TMP_Text[] buttonLabels;
 
     UnityAction refreshAll;
 
@@ -30,10 +30,7 @@ public class KeybindColumn : MonoBehaviour
                 defaultBindings = GameConsts.DefaultsSingle;
                 break;
         }
-    }
 
-    private void Start()
-    {
         Button[] buttons = GetComponentsInChildren<Button>(true);
         int i = 0;
 
@@ -48,6 +45,7 @@ public class KeybindColumn : MonoBehaviour
             {
                 kb.Init(this, controlConfig, btn, id);
                 refreshAll += kb.RefreshLabel;
+                refreshAll += () => kb.SetConflictColour(false);
             }
             else // is Reset
             {
@@ -55,31 +53,69 @@ public class KeybindColumn : MonoBehaviour
                 {
                     controlConfig.Apply(defaultBindings);
                     refreshAll?.Invoke();
+                    if (multiOtrKC != null)
+                    {
+                        foreach (TMP_Text label in multiOtrKC.buttonLabels)
+                        {
+                            multiOtrKC.FindAndToggleConflict(label.text, label);
+                        }
+                    }
                 };
                 kb.Init(this, controlConfig, btn, id, resetAct);
             }
             i++;
         }
-        buttonLabels = buttons.Select(b => b.GetComponentInChildren<TMP_Text>(true)).ToArray();
+        buttonLabels = buttons
+            .Take(buttons.Length - 1)
+            .Select(b => b.GetComponentInChildren<TMP_Text>(true))
+            .ToArray();
     }
 
-    public bool FindAndTurnConflictRed(KeyCode key, TMP_Text keyLabelTMP)
+    public bool FindAndToggleConflict(KeyCode newKey, TMP_Text keyLabelTMP) // Remove includeOtr for new Appr
+    {
+        return FindAndToggleConflict(newKey.ToString(), keyLabelTMP);
+    }
+
+    public bool FindAndToggleConflict(string newLabel, TMP_Text keyLabelTMP) // Remove includeOtr for new Appr
     {
         string originalLabel = keyLabelTMP.text;
         bool found = false;
-        string newLabel = key.ToString();
         TMP_Text onlyConflicted = null;
         bool wasUnique = true;
 
+        FindInArray(ref found, newLabel, originalLabel, ref onlyConflicted, ref wasUnique, keyLabelTMP);
+        multiOtrKC?
+            .FindInArray(ref found, newLabel, originalLabel, ref onlyConflicted, ref wasUnique, keyLabelTMP);
+
+        if (onlyConflicted != null)
+        {
+            onlyConflicted.color = GameConsts.configLabelColorDefault;
+            KeybindButton kb = onlyConflicted.transform.parent.GetComponent<KeybindButton>();
+            kb.ApplyKey();
+        }
+
+        keyLabelTMP.color = found ? GameConsts.configLabelColorConflicted : GameConsts.configLabelColorDefault;
+
+        return found;
+    }
+
+    public void FindInArray(ref bool found, string newLabel, string originalLabel, ref TMP_Text onlyConflicted, ref bool wasUnique, TMP_Text keyLabelTMP)
+    {
         foreach (TMP_Text label in buttonLabels)
         {
+            if (label == keyLabelTMP)
+            {
+                continue;
+            }
+
             if (label?.text == newLabel)
             {
                 label.color = GameConsts.configLabelColorConflicted;
                 found = true;
+                continue;
             }
 
-            if (label?.text == originalLabel && label != keyLabelTMP)
+            if (label?.text == originalLabel)
             {
                 if (wasUnique)
                 {
@@ -92,14 +128,5 @@ public class KeybindColumn : MonoBehaviour
                 }
             }
         }
-
-        if (onlyConflicted != null)
-        {
-            onlyConflicted.color = GameConsts.configLabelColorDefault;
-            KeybindButton kb = onlyConflicted.transform.parent.GetComponent<KeybindButton>();
-            kb.ApplyKey();
-        }
-        
-        return found;
     }
 }
