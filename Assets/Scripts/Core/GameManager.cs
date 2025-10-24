@@ -22,8 +22,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] TMP_Text centralText1;
     [SerializeField] TMP_Text centralText2;
     [SerializeField] TMP_Text bottomInfo;
-    [SerializeField] GameObject attackRefPoint;
-    [SerializeField] GameObject attackPrefab;
+    [SerializeField] AttackEffect attackEffect;
 
     [HideInInspector] public ModeManager modeManager;
     [HideInInspector] public bool is_2P;
@@ -91,8 +90,6 @@ public class GameManager : MonoBehaviour
                 centralText.gameObject.SetActive(false);
             }
         }
-        ExecuteWhenHeld(restart, ref previousRTime, RestartGame, "Restarting", true);
-        ExecuteWhenHeld(forfeit, ref previousFTime, ForfeitGame, "Exiting", false);
 
         if (gameEnded && !gameOverTriggered)
         {
@@ -106,12 +103,23 @@ public class GameManager : MonoBehaviour
         {
             bottomInfo.text = $"Press R to restart\n" +
                               $"Press esc to end game";
+            return;
         }
+
+        ExecuteWhenHeld(restart, ref previousRTime, RestartGame, "Restarting", true);
+        ExecuteWhenHeld(forfeit, ref previousFTime, ForfeitGame, "Exiting", false);
     }
 
     private void ExecuteWhenHeld(KeyCode key, ref float previousTime, System.Action act, string str, bool first)
     {
         TMP_Text tmpText = first ? centralText1 : centralText2;
+
+        if (gameEnded)
+        {
+            tmpText.gameObject.SetActive(false);
+            return;
+        }
+
         if (Input.GetKeyDown(key))
         {
             previousTime = Time.time;
@@ -339,19 +347,9 @@ public class GameManager : MonoBehaviour
         int toSend = garbageHandler.RemoveGarbageFromQueue(toRemove);
         if (toSend > 0)
         {
-            SpawnAttack(toSend);
+            attackEffect.SpawnAttack(toSend);
         }
         return toSend;
-    }
-
-    private void SpawnAttack(int num)
-    {
-        var refTransform = attackRefPoint.transform;
-        for (; num > 0; num--)
-        {
-            Quaternion rot = refTransform.rotation * Quaternion.Euler(0f, 0f, Random.value * 5f);
-            Instantiate(attackPrefab, refTransform.position, rot);
-        }
     }
 
     public void AddGarbageToQueue(int toAdd)
