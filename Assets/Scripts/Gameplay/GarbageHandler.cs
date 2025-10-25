@@ -23,8 +23,7 @@ public class GarbageHandler : MonoBehaviour
     }
     private int garbageBuffer = 0;
 
-    public const int gridWidth = GameConsts.GridWidth;
-    public const int gridHeight = GameConsts.GridHeight;
+    public const int gridWidth = GameConsts.GridWidth, gridHeight = GameConsts.GridHeight;
 
     public void AddGarbageToQueue(int value)
     {

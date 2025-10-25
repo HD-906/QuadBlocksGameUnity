@@ -8,8 +8,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private List<GameObject> currentBag = new List<GameObject>();
     [SerializeField] private GameObject[] tetrominoPrefabs;
     [SerializeField] private GameObject garbageQueuePrefab;
-    [SerializeField] private GameObject current;
-    [SerializeField] private GameObject onHold;
+    [SerializeField] private GameObject current, onHold;
     [SerializeField] private bool holdLocked = false;
     [SerializeField] public Transform[,] grid;
     [SerializeField] public bool gameOverTriggered = false;
@@ -18,11 +17,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] float cellSize = GameConsts.CellSize;
     [SerializeField] public int level = 1;
     [SerializeField] private InFieldStatus fieldStatus;
-    [SerializeField] TMP_Text centralText;
-    [SerializeField] TMP_Text centralText1;
-    [SerializeField] TMP_Text centralText2;
+    [SerializeField] TMP_Text centralText, centralText1, centralText2;
     [SerializeField] TMP_Text bottomInfo;
-    [SerializeField] AttackEffect attackEffect;
+    [SerializeField] AttackEffectHandler attackEffect;
 
     [HideInInspector] public ModeManager modeManager;
     [HideInInspector] public bool is_2P;
@@ -30,20 +27,18 @@ public class GameManager : MonoBehaviour
     public static bool gameEnded = false;
     private Vector2Int spawnPosition = GameConsts.SpawnCell;
 
-    public const int gridWidth = GameConsts.GridWidth;
-    public const int gridHeight = GameConsts.GridHeight;
+    public const int gridWidth = GameConsts.GridWidth, gridHeight = GameConsts.GridHeight;
 
     private bool[] lastPieceMovementStatus = { false, false };
     public bool lastPieceHarddroped = true;
     private float holdTime = GameConsts.holdTime;
 
-    private float previousRTime = -1f;
-    private float previousFTime = -1f;
-    private KeyCode restart;
-    private KeyCode forfeit = GameConsts.forfeit;
+    private float previousRTime = -1f, previousFTime = -1f;
+    private KeyCode restart, forfeit = GameConsts.forfeit;
 
     private float countDown = GameConsts.startCountdown;
     public bool started = false;
+
     public GarbageHandler garbageHandler;
     public bool sticky = true;
 

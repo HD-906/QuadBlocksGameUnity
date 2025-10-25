@@ -13,32 +13,18 @@ public class TetroLogic : MonoBehaviour
     private float dcd;
     private int sdf;
 
-    private KeyCode moveLeft;
-    private KeyCode moveRight;
-    private KeyCode softDrop;
-    private KeyCode hardDrop;
-    private KeyCode rotateRight;
-    private KeyCode rotateLeft;
-    private KeyCode hold;
+    private KeyCode moveLeft, moveRight, softDrop, hardDrop, rotateRight, rotateLeft, hold;
 
-    private bool dasTriggeredLeft = false;
-    private bool dasTriggeredRight = false;
-    private bool cancelLeft = false;
-    private bool cancelRight = false;
-    private bool firstLeftDown = false;
-    private bool firstRightDown = false;
-    private float fallTime = 0.5f;
-    private float lockDelayTime;
-    private float harddropEnableTime = GameConsts.harddropEnableTime;
+    private bool dasTriggeredLeft = false, dasTriggeredRight = false;
+    private bool cancelLeft = false, cancelRight = false;
+    private bool firstLeftDown = false, firstRightDown = false;
+    private float fallTime = 0.5f, lockDelayTime, harddropEnableTime = GameConsts.harddropEnableTime;
     private float startTime;
     private GameObject ghostGO;
     private GhostPiece ghost;
 
-    private float previousTime = -1;
-    private float previousLeftDownTime = -1;
-    private float previousRightDownTime = -1;
-    private float previousLeftArrTime = -1;
-    private float previousRightArrTime = -1;
+    private float previousTime = -1, previousLeftDownTime = -1, previousRightDownTime = -1;
+    private float previousLeftArrTime = -1, previousRightArrTime = -1;
     private float softDropTime = -1;
     private int lowestY = 25;
     private int movementCount = 0;

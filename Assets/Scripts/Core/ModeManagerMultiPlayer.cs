@@ -2,8 +2,7 @@ using UnityEngine;
 
 public class ModeManagerMultiPlayer : ModeManager
 {
-    [SerializeField] GameManager gameManager_1;
-    [SerializeField] GameManager gameManager_2;
+    [SerializeField] GameManager gameManager_1, gameManager_2;
     private int currentLevel = 1;
     private float startTime;
 
