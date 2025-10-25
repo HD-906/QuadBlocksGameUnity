@@ -187,14 +187,14 @@ public class Tetromino : MonoBehaviour
         } // 0, 1, 2 -> No T-spin, T-spin mini, full T-spin
          
         bool lockout = AddToGrid();
-        int linesCleared = gameManager.ClearFullLines();
+        int linesCleared = gameManager.ClearFullLines(); // ==> also checks for perfect clear
         if (lockout && linesCleared == 0)
         {
             gameManager.GameOver();
             return;
         }
         // Cancels garbage before spawning garbage from queue
-        gameManager.LineClearHandling(linesCleared, tSpin);
+        gameManager.LineClearHandling(linesCleared, tSpin); // ==> checks other line clear effect
         gameManager.RaiseGarbage();
         gameManager.SpawnNextTetromino();
         enabled = false;

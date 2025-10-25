@@ -41,6 +41,7 @@ public class GameManager : MonoBehaviour
 
     public GarbageHandler garbageHandler;
     public bool sticky = true;
+    private bool perfectClear = false;
 
     [SerializeField] public ControlConfig ctrlCfg;
 
@@ -297,10 +298,10 @@ public class GameManager : MonoBehaviour
             return 0;
         }
 
-        if (cleared == upperBound)
+        if (cleared == upperBound) // ================= Perfect Clear
         {
             fieldStatus.AddScorePerfectClear(cleared, level);
-            modeManager.GetGarbagePerfectClear(is_2P);
+            perfectClear = true; // Wait 
         }
 
         int yToFill = toClearList[0];
@@ -362,6 +363,11 @@ public class GameManager : MonoBehaviour
         garbageHandler.RaiseGarbage(sticky);
     }
 
+    public void EnableMessageEffect(int lineClear, int tSpinStatus, bool backToBack, int comboNum, bool perfectClr)
+    {
+        attackEffect.EnableMessageEffect(lineClear, tSpinStatus, backToBack, comboNum, perfectClr);
+    }
+
     public void AddScore(int toAdd)
     {
         fieldStatus.AddScore(toAdd);
@@ -372,7 +378,8 @@ public class GameManager : MonoBehaviour
         bool backToBack = fieldStatus.BackToBack;
         int combo = fieldStatus.Combo;
         fieldStatus.AddScoreBonus(linesCleared, tSpinStatus, level);
-        modeManager.GetGarbage(is_2P, linesCleared, tSpinStatus, backToBack, combo);
+        modeManager.GetGarbage(is_2P, linesCleared, tSpinStatus, backToBack, combo, perfectClear);
+        perfectClear = false;
     }
 
     public void GameOver()

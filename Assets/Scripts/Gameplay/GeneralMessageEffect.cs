@@ -6,7 +6,8 @@ public class GeneralMessageEffect : MonoBehaviour
 {
     SpriteRenderer spriteRenderer;
     TMP_Text textTMP;
-    float fadeDuration = 1f;
+    float holdDuration = 0.25f;
+    float fadeDuration = 0.75f;
     Coroutine co;
 
 
@@ -14,6 +15,7 @@ public class GeneralMessageEffect : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         textTMP = GetComponent<TMP_Text>() ?? GetComponentInChildren<TMP_Text>();
+        gameObject.SetActive(false);
     }
 
     public void Show()
@@ -24,14 +26,14 @@ public class GeneralMessageEffect : MonoBehaviour
         }
         gameObject.SetActive(true);
 
-        if (spriteRenderer) spriteRenderer.color = new Color(1, 1, 1, 1);
-        if (textTMP) textTMP.color = new Color(1, 1, 1, 1);
+        //if (spriteRenderer) spriteRenderer.color = new Color(1, 1, 1, 1);
+        //if (textTMP) textTMP.color = new Color(1, 1, 1, 1);
         co = StartCoroutine(FadeOut());
     }
 
     IEnumerator FadeOut()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(holdDuration);
         float t = 0;
         while (t < fadeDuration)
         {
@@ -54,7 +56,7 @@ public class GeneralMessageEffect : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    Color ChangeAlpha(Color color, float a)
+    public static Color ChangeAlpha(Color color, float a)
     {
         color.a = a;
         return color;

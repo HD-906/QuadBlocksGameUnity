@@ -39,16 +39,21 @@ public class AttackEffectHandler : MonoBehaviour
         }
     }
 
-    public void EnableUI(int lineClear, int tSpinStatus, bool backToBack, int comboNum, bool perfectClr)
+    public void EnableMessageEffect(int lineClear, int tSpinStatus, bool backToBack, int comboNum, bool perfectClr)
     {
         if (perfectClr)
         {
-            perfectClearEffect.enabled = true;
+            perfectClearEffect.Show();
         }
 
         if (comboNum > 0)
         {
-            comboObj.SetActive(true);
+            comboEffect.Show();
+        }
+
+        if (backToBack)
+        {
+            backToBackEffect.Show();
         }
     }
 

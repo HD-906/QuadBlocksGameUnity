@@ -40,19 +40,7 @@ public class ModeManagerMultiPlayer : ModeManager
 
     public override void AddLinesCleared(int linesCleared) { } // used in Single Player mode
 
-    public override void GetGarbagePerfectClear(bool is_2P)
-    {
-        if (is_2P)
-        {
-            gameManager_1.AddGarbageToQueueDelayed(10);
-        }
-        else
-        {
-            gameManager_2.AddGarbageToQueueDelayed(10);
-        }
-    }
-
-    public override int GetGarbage(bool is_2P, int linesCleared, int tSpinStatus, bool backToBack, int combo)
+    public override int GetGarbage(bool is_2P, int linesCleared, int tSpinStatus, bool backToBack, int combo, bool perfectClr)
     {
         int garbage = 0;
         if (tSpinStatus < 2)
@@ -78,13 +66,20 @@ public class ModeManagerMultiPlayer : ModeManager
 
         garbage += GameConsts.GetLinesCombo(combo);
 
+        if (perfectClr)
+        {
+            garbage += GameConsts.perfectClearGarbage;
+        }
+
         if (is_2P)
         {
             HandleGarbage(gameManager_2, gameManager_1, garbage);
+            gameManager_2.EnableMessageEffect(linesCleared, tSpinStatus, backToBack, combo, perfectClr);
         }
         else
         {
             HandleGarbage(gameManager_1, gameManager_2, garbage);
+            gameManager_1.EnableMessageEffect(linesCleared, tSpinStatus, backToBack, combo, perfectClr);
         }
 
         return garbage;
