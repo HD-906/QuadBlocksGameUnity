@@ -377,8 +377,8 @@ public class GameManager : MonoBehaviour
     {
         bool backToBack = fieldStatus.BackToBack;
         int combo = fieldStatus.Combo;
-        fieldStatus.AddScoreBonus(linesCleared, tSpinStatus, level);
-        modeManager.GetGarbage(is_2P, linesCleared, tSpinStatus, backToBack, combo, perfectClear);
+        fieldStatus.AddScoreBonus(linesCleared, tSpinStatus, level); // Will also update B2B status in fieldStatus
+        modeManager.GetGarbage(is_2P, linesCleared, tSpinStatus, backToBack && fieldStatus.BackToBack, combo, perfectClear);
         perfectClear = false;
     }
 

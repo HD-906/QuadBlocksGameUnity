@@ -42,6 +42,11 @@ public class ModeManagerMultiPlayer : ModeManager
 
     public override int GetGarbage(bool is_2P, int linesCleared, int tSpinStatus, bool backToBack, int combo, bool perfectClr)
     {
+        if (linesCleared == 0)
+        {
+            return 0;
+        }
+
         int garbage = 0;
         if (tSpinStatus < 2)
         {

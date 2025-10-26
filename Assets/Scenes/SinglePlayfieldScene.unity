@@ -383,7 +383,7 @@ MonoBehaviour:
   centralText1: {fileID: 452184923}
   centralText2: {fileID: 2051625041}
   bottomInfo: {fileID: 377406464}
-  attackEffect: {fileID: 0}
+  attackEffect: {fileID: 140510707}
   modeManager: {fileID: 965902221}
   is_2P: 0
   lastPieceHarddroped: 1
@@ -1245,7 +1245,7 @@ Transform:
   m_GameObject: {fileID: 666152032}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.5, y: 26.35, z: -2}
+  m_LocalPosition: {x: -4.5, y: 6.5, z: -2}
   m_LocalScale: {x: 7.8599997, y: 4.01704, z: 7.8599997}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -1937,7 +1937,7 @@ Transform:
   m_GameObject: {fileID: 1072487374}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 9, y: 24, z: -2}
+  m_LocalPosition: {x: -4, y: 11, z: -2}
   m_LocalScale: {x: 4.7599998, y: 4.7599998, z: 4.7599998}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -3635,7 +3635,7 @@ Transform:
   m_GameObject: {fileID: 1810762253}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 1.5, y: 23.5, z: -2}
+  m_LocalPosition: {x: -4.5, y: 3.5, z: -2}
   m_LocalScale: {x: 2.5299997, y: 3.61255, z: 0.25154}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -4026,7 +4026,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2023460512
 RectTransform:
   m_ObjectHideFlags: 0

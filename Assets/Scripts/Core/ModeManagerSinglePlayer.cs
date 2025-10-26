@@ -156,8 +156,15 @@ public class ModeManagerSinglePlayer : ModeManager
     }
 
     public override int GetGarbage(bool is_2P, int linesCleared, int tSpinStatus, bool backToBack, int combo, bool perfectClr)
-    {
-        return 0; // unused in Single Player
+    { // Only used for message effect in Single Player
+        if (linesCleared == 0)
+        {
+            return 0;
+        }
+
+        gameManager.EnableMessageEffect(linesCleared, tSpinStatus, backToBack, combo, perfectClr);
+
+        return 0;
     }
 
     private string TimeToString()

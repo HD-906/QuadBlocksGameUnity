@@ -23,7 +23,7 @@ public class AttackEffectHandler : MonoBehaviour
                           ?? perfectClear.AddComponent<GeneralMessageEffect>();
     }
 
-    public void SpawnAttack(int num)
+    public void SpawnAttack(int num) // Only called in multiplayer
     {
         StartCoroutine(SpawnAttackCoroutine(num));
     }
@@ -41,15 +41,18 @@ public class AttackEffectHandler : MonoBehaviour
 
     public void EnableMessageEffect(int lineClear, int tSpinStatus, bool backToBack, int comboNum, bool perfectClr)
     {
+        if (lineClear == 0)
+        {
+            return;
+        }
+
         if (perfectClr)
         {
             perfectClearEffect.Show();
         }
 
-        if (comboNum > 0)
-        {
-            comboEffect.Show();
-        }
+        comboEffect.ShowCombo(comboNum);
+        clearTypeEffect.ShowClear(lineClear, tSpinStatus);
 
         if (backToBack)
         {
