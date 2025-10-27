@@ -1,10 +1,56 @@
-Library/
-.vs/TetrisUnity/
-Temp/
+# Unity generated folders
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
 UserSettings/
-Logs/
-obj/
-.vsconfig
-Assembly-CSharp.csproj
-TetrisUnity.sln
+MemoryCaptures/
+Records/
+SysCache/
+
+# IDE / OS
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.db
+.DS_Store
+Thumbs.db
+
+# Visual Studio project files
+*.csproj
+*.unityproj
+*.sln
+*.vsconfig
+*.suo
+*.tmp
+
+# Auto-upgrade log
 UpgradeLog.htm
+
+# Unity build outputs (keep only plan to track builds separately)
+# Builds/
+# Build/
+
+# Rider / JetBrains
+.idea/
+*.iml
+
+# Crash reports
+sysinfo.txt
+
+# Exclude addressable build cache
+AddressableAssetsData/*/bin/
+AddressableAssetsData/*/obj/
+
+# Exclude Unity auto-generated test results
+*.unitypackage
