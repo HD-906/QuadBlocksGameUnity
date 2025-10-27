@@ -1,47 +1,53 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GarbageQueueUI : MonoBehaviour
+public class DrillingTimerUI : MonoBehaviour
 {
     [SerializeField] private GameManager gameManager;
     [SerializeField] private GameObject previewUnitPrefab;
-    private GarbageHandler handler;
     private readonly List<GameObject> pool = new();
 
-    private void Awake()
+    public event System.Action<int> OnChanged;
+    public int MaxTimer { get; } = GameConsts.TopOutHeight;
+    private int timerCount = 0;
+    public int TimerCount
     {
-        handler = gameManager.garbageHandler;
+        get => timerCount;
+        set
+        {
+            value = Mathf.Clamp(value, 0, MaxTimer);
+            if (value == timerCount) return;
+            timerCount = value;
+            OnChanged?.Invoke(value);
+        }
     }
 
     private void OnEnable()
     {
-        handler.OnChanged += Render;
-        Render(handler.GarbageQueue);
+        OnChanged += Render;
+        EnsurePool();
     }
 
     private void OnDisable()
     {
-        handler.OnChanged -= Render;
+        OnChanged -= Render;
     }
 
     private void EnsurePool()
     {
         int count = 0;
-        while (pool.Count < handler.MaxGarbage)
+        while (pool.Count < GameConsts.TopOutHeight)
         {
             var go = Instantiate
                 (
                     previewUnitPrefab,
-                    leftField(gameManager.is_2P, count++),
+                    leftField(!gameManager.is_2P, count++),
                     Quaternion.identity
                 );
-            if (count <= handler.MaxGarbageSpawn)
+            var goSR = go.GetComponent<SpriteRenderer>();
+            if (goSR != null)
             {
-                var goSR = go.GetComponent<SpriteRenderer>();
-                if (goSR != null)
-                {
-                    goSR.color = new Color(0.55f, 0f, 0.1f);
-                }
+                goSR.color = new Color(0.75f, 1.0f - count / 20f, 0.1f);
             }
             go.SetActive(false);
             pool.Add(go);

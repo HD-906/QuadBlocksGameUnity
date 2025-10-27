@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] TMP_Text bottomInfo;
     [SerializeField] AttackEffectHandler attackEffect;
 
-    [HideInInspector] public ModeManager modeManager;
+    [HideInInspector] public ModeManager modeManager; // Set in ModeManager.Awake()
     [HideInInspector] public bool is_2P;
 
     public static bool gameEnded = false;

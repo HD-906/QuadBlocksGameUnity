@@ -341,6 +341,7 @@ GameObject:
   - component: {fileID: 140510705}
   - component: {fileID: 140510706}
   - component: {fileID: 140510707}
+  - component: {fileID: 140510708}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -466,7 +467,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 140510701}
-  unitPrefab: {fileID: 5492220890843784036, guid: bf8174fa27a2e8c4cad5dc230dab1263, type: 3}
+  previewUnitPrefab: {fileID: 5492220890843784036, guid: bf8174fa27a2e8c4cad5dc230dab1263, type: 3}
 --- !u!114 &140510707
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -485,6 +486,20 @@ MonoBehaviour:
   clearTypeObj: {fileID: 1810762253}
   backToBackObj: {fileID: 666152032}
   perfectClear: {fileID: 2023460511}
+--- !u!114 &140510708
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 140510700}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ac7351b3246fdd4c9a871bae45b51e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameManager: {fileID: 140510701}
+  previewUnitPrefab: {fileID: 5492220890843784036, guid: bf8174fa27a2e8c4cad5dc230dab1263, type: 3}
 --- !u!1 &173465575
 GameObject:
   m_ObjectHideFlags: 0
@@ -1656,6 +1671,7 @@ MonoBehaviour:
   InitSprintLines: 0
   timeValue: 0
   gameManager: {fileID: 140510701}
+  drillingTimerUI: {fileID: 140510708}
 --- !u!1 &1027188645
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,7 +9,7 @@ public class GarbageHandler : MonoBehaviour
     public int MaxGarbage { get; } = GameConsts.maxGarbage;
     public int MaxGarbageSpawn { get; } = GameConsts.maxGarbageSpawn;
     public int currentTop = 0;
-    public event System.Action<int> OnChanged;
+    public event System.Action<int> OnChanged; // Assigned in GarbageQueueUI.cs
     public int GarbageQueue
     {
         get => garbageQueue;

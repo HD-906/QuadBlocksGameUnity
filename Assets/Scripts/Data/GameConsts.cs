@@ -11,6 +11,7 @@ public static class GameConsts
     [Header("GameData")]
     public const int GridWidth = 10;
     public const int GridHeight = 60;
+    public const int TopOutHeight = 20;
     public static readonly Vector2Int SpawnCell = new(4, 18);
     public const float CellSize = 1f;
 
@@ -34,6 +35,11 @@ public static class GameConsts
 
     public static Color configLabelColorDefault = Color.black;
     public static Color configLabelColorConflicted = Color.red;
+
+    [Header("UI data")]
+
+    public static Vector3 LeftGarbageUIStart = Vector3.left * 0.75f;
+    public static Vector3 RightGarbageUIStart = Vector3.right * 0.85f;
 
     [Header("Defaults Controls")]
     public static readonly ControlBindings DefaultsSingle = new ControlBindings
