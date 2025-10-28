@@ -70,7 +70,7 @@ public class MainMenuController : MonoBehaviour
         Set(0, "Single Player", ShowSinglePlayer);
         Set(1, "Multi Player",  ShowMultiPlayer);
         Set(2, "Config",        ShowConfig);
-        buttons[3].gameObject.SetActive(false);
+        Set(3, "Quit",          QuitGame);
 
         backButton.gameObject.SetActive(false);
 
@@ -88,8 +88,6 @@ public class MainMenuController : MonoBehaviour
         configRoot.SetActive(false);
         popupPanel.SetActive(false);
         menuRoot.SetActive(true);
-
-        buttons[3].gameObject.SetActive(true);
 
         Set(0, "Sprint",   () => StartMode(SceneNames.PlayfieldSingle, GameConsts.modeSprint));
         Set(1, "Blitz",    () => StartMode(SceneNames.PlayfieldSingle, GameConsts.modeBlitz));
@@ -111,8 +109,6 @@ public class MainMenuController : MonoBehaviour
         configRoot.SetActive(false);
         popupPanel.SetActive(false);
         menuRoot.SetActive(true);
-
-        buttons[3].gameObject.SetActive(true);
 
         Set(0, "Easy",      () => StartMode(SceneNames.PlayfieldSingle, GameConsts.modeDrilling, 0));
         Set(1, "Normal",    () => StartMode(SceneNames.PlayfieldSingle, GameConsts.modeDrilling, 1));
@@ -146,6 +142,15 @@ public class MainMenuController : MonoBehaviour
         }
 
         backButton.gameObject.SetActive(true);
+    }
+
+    void QuitGame()
+    {
+        Application.Quit();
+
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
     }
 
     void Back()
