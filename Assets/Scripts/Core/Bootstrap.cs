@@ -2,7 +2,7 @@ using UnityEngine;
 
 public enum MenuPage
 {
-    Root, SinglePlayer, MultiPlayer, Config, Drilling
+    Root, SinglePlayer, MultiPlayer, Config, Driller
 }
 
 public class Bootstrap : MonoBehaviour

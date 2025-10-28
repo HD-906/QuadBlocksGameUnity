@@ -16,7 +16,7 @@ public static class GameConsts
     public const float CellSize = 1f;
 
     public const int sprintLines = 40;
-    public static readonly int[] drillingLines = {
+    public static readonly int[] drillerLines = {
         50, 100, 200, 500
     };
     public const int blitzTimeCentiSec = 12000;
@@ -105,16 +105,38 @@ public static class GameConsts
     public const float holdTime = 2f;
 
     [Header("Names")]
-    public const string modeSprint  = "Sprint";
+    public const string modeSprint = "Sprint";
     public const string modeBlitz = "Blitz";
     public const string modeMarathon = "Marathon";
-    public const string modeDrilling = "Drilling";
+    public const string modeDriller = "Driller";
     public const string modeBattle = "Battle";
 
     [Header("Race Mode Interval")]
-    public static readonly int[] DrillingGarbageInterval = { 
-        20, 12, 7, 4 
+    public static readonly int[] drillerInitialGarbage = {
+        6, 8, 10, 12
     };
+    public static readonly int[] drillerGarbageInterval = {
+        20, 12, 7, 4
+    };
+    private static readonly float[] drillerGarbageWeights = { 0.5f, 0.2f, 0.1f, 0.2f };
+    private static readonly int[] drillerGarbageValues = { 1, 2, 3, 5 };
+    public static int DrillerGarbageValue
+    {
+        get
+        {
+            float r = Random.value;
+            float cumulative = 0f;
+
+            for (int i = 0; i < drillerGarbageWeights.Length; i++)
+            {
+                cumulative += drillerGarbageWeights[i];
+                if (r < cumulative)
+                    return drillerGarbageValues[i];
+            }
+
+            return drillerGarbageValues[^1];
+        }
+    }
 
     [Header("Combo Garbage List")]
     private static readonly int[] linesByCombo = {

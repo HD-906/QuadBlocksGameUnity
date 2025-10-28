@@ -13,7 +13,7 @@ public class ModeManagerSinglePlayer : ModeManager
     private int timeValueInitial;
     [SerializeField] private int timeValue;
     [SerializeField] public GameManager gameManager;
-    [SerializeField] private DrillingTimerUI drillingTimerUI;
+    [SerializeField] private DrillerTimerUI drillerTimerUI;
     private bool started = false;
     private float timeStart = 0;
     private int garbageInterval = -1;
@@ -29,9 +29,9 @@ public class ModeManagerSinglePlayer : ModeManager
         }
         modeName.text = SceneData.selectedMode;
 
-        if (SceneData.selectedMode == GameConsts.modeDrilling)
+        if (SceneData.selectedMode == GameConsts.modeDriller)
         {
-            garbageInterval = 100 * GameConsts.DrillingGarbageInterval[SceneData.difficulty];
+            garbageInterval = 100 * GameConsts.drillerGarbageInterval[SceneData.difficulty];
         }
         InitCondition();
         timeStart = Time.time;
@@ -62,29 +62,30 @@ public class ModeManagerSinglePlayer : ModeManager
                 timeValue = timeValueInitial = 0;
                 condition.text = $"{TimeToString()}\nRemaining: {condValue}";
                 updateAction = UpdateConditionSprint;
-                drillingTimerUI.enabled = false;
+                drillerTimerUI.enabled = false;
                 break;
             case GameConsts.modeBlitz:
                 condValue = gameManager.level;
                 timeValue = timeValueInitial = GameConsts.blitzTimeCentiSec;
                 condition.text = $"Level {condValue}\n{TimeToString()}";
                 updateAction = UpdateConditionBlitz;
-                drillingTimerUI.enabled = false;
+                drillerTimerUI.enabled = false;
                 break;
             case GameConsts.modeMarathon:
                 condValue = gameManager.level;
                 timeValue = timeValueInitial = 0;
                 condition.text = $"Level {condValue}\n{TimeToString()}";
                 updateAction = UpdateConditionMarathon;
-                drillingTimerUI.enabled = false;
+                drillerTimerUI.enabled = false;
                 break;
-            case GameConsts.modeDrilling:
-                InitSprintLines = condValue = GameConsts.drillingLines[SceneData.difficulty];
+            case GameConsts.modeDriller:
+                InitSprintLines = condValue = GameConsts.drillerLines[SceneData.difficulty];
                 timeValue = timeValueInitial = 0;
                 condition.text = $"{TimeToString()}\nRemaining: {condValue}";
-                updateAction = UpdateConditionDrilling;
-                gameManager.sticky = false;
-                drillingTimerUI.enabled = true;
+                updateAction = UpdateConditionDriller;
+                drillerTimerUI.enabled = true;
+                gameManager.InitGarbage(GameConsts.drillerInitialGarbage[SceneData.difficulty]);
+                gameManager.drillerMode = true;
                 break;
             default:
                 break;
@@ -138,7 +139,7 @@ public class ModeManagerSinglePlayer : ModeManager
         gameManager.level = currentLevel;
     }
 
-    private void UpdateConditionDrilling(int timePassed)
+    private void UpdateConditionDriller(int timePassed)
     {
         condValue = Mathf.Max(0, InitSprintLines - totalLinesCleared);
         timeValue = timeValueInitial + timePassed;
@@ -154,7 +155,7 @@ public class ModeManagerSinglePlayer : ModeManager
             lastGarbageTime = (timePassed / garbageInterval) * garbageInterval;
         }
 
-        drillingTimerUI.TimerCount = GameConsts.TopOutHeight * (timePassed - lastGarbageTime) / garbageInterval;
+        drillerTimerUI.TimerCount = GameConsts.TopOutHeight * (timePassed - lastGarbageTime) / garbageInterval;
     }
 
     public override void AddLinesCleared(int linesCleared)

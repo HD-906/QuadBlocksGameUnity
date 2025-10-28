@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 public class GarbageHandler : MonoBehaviour
@@ -63,20 +64,20 @@ public class GarbageHandler : MonoBehaviour
         return value - removed; // remaining to be sent
     }
 
-    public void RaiseGarbage(bool sticky)
+    public void RaiseGarbage(bool drillerMode, bool raiseAll, bool sticky)
     {
         if (GarbageQueue > 0)
         {
-            int garbageSpawned = Mathf.Min(GarbageQueue, MaxGarbageSpawn);
-            RaiseGarbage(garbageSpawned, sticky);
+            int garbageSpawned = drillerMode || raiseAll
+                ? GarbageQueue
+                : Mathf.Min(GarbageQueue, MaxGarbageSpawn);
+            RaiseGarbage(garbageSpawned, drillerMode, sticky);
             GarbageQueue -= garbageSpawned;
         }
     }
 
-    private int RaiseGarbage(int lines, bool sticky)
+    private int RaiseGarbage(int lines, bool drillerMode, bool sticky)
     {
-        lines = Mathf.Clamp(lines, 0, MaxGarbageSpawn);
-
         if (lines == 0)
         {
             return 0;
@@ -97,44 +98,61 @@ public class GarbageHandler : MonoBehaviour
         }
         currentTop += lines;
 
-        int holeCol = PlaceGarbageLineRand(0);
-        for (int y = 1; y < lines; y++)
+        if (drillerMode)
         {
-            holeCol = sticky 
-                ? PlaceGarbageLineRandSticky(y, holeCol)
-                : PlaceGarbageLineRand(y);
+            for (int y = 0; y < lines; y++)
+            {
+                PlaceGarbageLineRandDriller(y);
+            }
+        }
+        else
+        {
+            int holeCol = -1;
+            for (int y = 0; y < lines; y++)
+            {
+                holeCol = PlaceGarbageLineRand(y, holeCol, sticky);
+            }
         }
 
         return lines;
     }
 
-    private int PlaceGarbageLineRand(int y)
+    private int PlaceGarbageLineRand(int y, int holeCol, bool sticky)
     {
-        int holeCol = Random.Range(0, gridWidth - 1);
+        if (!sticky || holeCol < 0 || Random.value > 0.7)
+        {
+            holeCol = Random.Range(0, gridWidth - 1);
+        }
         PlaceGarbageLine(y, holeCol);
         return holeCol;
     }
 
-    private int PlaceGarbageLineRandSticky(int y, int holeCol)
+    private void PlaceGarbageLineRandDriller(int y)
     {
-        holeCol = Random.value < 0.7 ? holeCol : Random.Range(0, gridWidth - 1);
-        PlaceGarbageLine(y, holeCol);
-        return holeCol;
+        int[] holeCols = Enumerable.Range(0, 10)
+                         .OrderBy(_ => UnityEngine.Random.value)
+                         .Take(GameConsts.DrillerGarbageValue)
+                         .ToArray();
+        PlaceGarbageLine(y, holeCols);
     }
 
-    private void PlaceGarbageLine(int y, int holeColumn)
+    private void PlaceGarbageLine(int y, params int[] holeColumns)
     {
         var grid = gameManager.grid;
         for (int x = 0; x < gridWidth; x++)
         {
-            if (x == holeColumn)
+            if (holeColumns.Contains(x))
             {
                 Destroy(grid[x, y]?.gameObject);
                 grid[x, y] = null;
                 continue;
             }
 
-            GameObject block = Instantiate(blockPrefab, gameManager.CellToWorld(new Vector2Int(x, y)), Quaternion.identity);
+            GameObject block = Instantiate(
+                blockPrefab, 
+                gameManager.CellToWorld(new Vector2Int(x, y)), 
+                Quaternion.identity
+            );
             grid[x, y] = block.transform;
         }
     }

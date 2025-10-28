@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
     public bool started = false;
 
     public GarbageHandler garbageHandler;
-    public bool sticky = true;
+    public bool drillerMode = false;
     private bool perfectClear = false;
 
     [SerializeField] public ControlConfig ctrlCfg;
@@ -70,6 +70,7 @@ public class GameManager : MonoBehaviour
         gameOverTriggered = false;
         bottomInfo.text = $"Press and hold {restart} to restart\n" +
                           $"Press and hold esc to end game";
+        
     }
 
     void Update()
@@ -338,6 +339,12 @@ public class GameManager : MonoBehaviour
         return cleared;
     }
 
+    public void InitGarbage(int lines)
+    {
+        AddGarbageToQueue(lines);
+        RaiseGarbage(raiseAll: true, sticky: false);
+    }
+
     public int RemoveGarbageFromQueue(int toRemove)
     {
         int toSend = garbageHandler.RemoveGarbageFromQueue(toRemove);
@@ -358,9 +365,9 @@ public class GameManager : MonoBehaviour
         garbageHandler.AddGarbageToQueueDelayed(toAdd);
     }
 
-    public void RaiseGarbage()
+    public void RaiseGarbage(bool raiseAll = false, bool sticky = true)
     {
-        garbageHandler.RaiseGarbage(sticky);
+        garbageHandler.RaiseGarbage(drillerMode, raiseAll, sticky);
     }
 
     public void EnableMessageEffect(int lineClear, int tSpinStatus, bool backToBack, int comboNum, bool perfectClr)

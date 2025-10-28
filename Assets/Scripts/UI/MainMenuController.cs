@@ -33,8 +33,8 @@ public class MainMenuController : MonoBehaviour
                 ShowConfig();
                 escLock = true;
                 break;
-            case MenuPage.Drilling:
-                ShowDrilling();
+            case MenuPage.Driller:
+                ShowDriller();
                 escLock = true;
                 break;
             case MenuPage.Root: // falls down to default
@@ -89,10 +89,10 @@ public class MainMenuController : MonoBehaviour
         popupPanel.SetActive(false);
         menuRoot.SetActive(true);
 
-        Set(0, "Sprint",   () => StartMode(SceneNames.PlayfieldSingle, GameConsts.modeSprint));
-        Set(1, "Blitz",    () => StartMode(SceneNames.PlayfieldSingle, GameConsts.modeBlitz));
-        Set(2, "Marathon", () => StartMode(SceneNames.PlayfieldSingle, GameConsts.modeMarathon));
-        Set(3, "Drilling", ShowDrilling);
+        Set(0, GameConsts.modeSprint,   () => StartMode(SceneNames.PlayfieldSingle, GameConsts.modeSprint));
+        Set(1, GameConsts.modeBlitz,    () => StartMode(SceneNames.PlayfieldSingle, GameConsts.modeBlitz));
+        Set(2, GameConsts.modeMarathon, () => StartMode(SceneNames.PlayfieldSingle, GameConsts.modeMarathon));
+        Set(3, GameConsts.modeDriller,  ShowDriller);
 
         if (Bootstrap.I)
         {
@@ -102,7 +102,7 @@ public class MainMenuController : MonoBehaviour
         backButton.gameObject.SetActive(true);
     }
 
-    void ShowDrilling()
+    void ShowDriller()
     {
         GameManager.gameEnded = false;
         ClearAll();
@@ -110,14 +110,14 @@ public class MainMenuController : MonoBehaviour
         popupPanel.SetActive(false);
         menuRoot.SetActive(true);
 
-        Set(0, "Easy",      () => StartMode(SceneNames.PlayfieldSingle, GameConsts.modeDrilling, 0));
-        Set(1, "Normal",    () => StartMode(SceneNames.PlayfieldSingle, GameConsts.modeDrilling, 1));
-        Set(2, "Hard",      () => StartMode(SceneNames.PlayfieldSingle, GameConsts.modeDrilling, 2));
-        Set(3, "Very Hard", () => StartMode(SceneNames.PlayfieldSingle, GameConsts.modeDrilling, 3));
+        Set(0, "Easy",      () => StartMode(SceneNames.PlayfieldSingle, GameConsts.modeDriller, 0));
+        Set(1, "Normal",    () => StartMode(SceneNames.PlayfieldSingle, GameConsts.modeDriller, 1));
+        Set(2, "Hard",      () => StartMode(SceneNames.PlayfieldSingle, GameConsts.modeDriller, 2));
+        Set(3, "Very Hard", () => StartMode(SceneNames.PlayfieldSingle, GameConsts.modeDriller, 3));
 
         if (Bootstrap.I)
         {
-            Bootstrap.I.nextMenuPage = MenuPage.Drilling;
+            Bootstrap.I.nextMenuPage = MenuPage.Driller;
         }
 
         backButton.gameObject.SetActive(true);
@@ -157,7 +157,7 @@ public class MainMenuController : MonoBehaviour
     {
         if (Bootstrap.I.nextMenuPage != MenuPage.Config)
         {
-            if (Bootstrap.I.nextMenuPage == MenuPage.Drilling)
+            if (Bootstrap.I.nextMenuPage == MenuPage.Driller)
             {
                 ShowSinglePlayer();
                 return;

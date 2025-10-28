@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DrillingTimerUI : MonoBehaviour
+public class DrillerTimerUI : MonoBehaviour
 {
     [SerializeField] private GameManager gameManager;
     [SerializeField] private GameObject previewUnitPrefab;
