@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2ff4d07710c5ec145b13708d1e1fc6eb, type: 3}
-  m_Name: GameConfig
+  m_Name: BGMConfig
   m_EditorClassIdentifier: 
   mode: 0
   gravity: 1

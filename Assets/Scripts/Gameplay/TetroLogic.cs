@@ -46,7 +46,7 @@ public class TetroLogic : MonoBehaviour
 
     void Start()
     {
-        ControlConfig ctrlCfg = gameManager.ctrlCfg;
+        ControlConfig ctrlCfg = gameManager.cfg;
 
         gravity = 1 / getIntervalFromLevel();
         lockDelayTime = GameConsts.lockDelayTime;

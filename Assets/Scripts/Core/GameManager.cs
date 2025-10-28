@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
     public bool drillerMode = false;
     private bool perfectClear = false;
 
-    [SerializeField] public ControlConfig ctrlCfg;
+    [SerializeField] public ControlConfig cfg;
 
     void Awake()
     {
@@ -58,7 +58,7 @@ public class GameManager : MonoBehaviour
         preview.ShowNext(currentBag);
         preview.ShowHold(onHold);
 
-        restart = ctrlCfg.restart;
+        restart = cfg.restart;
     }
 
     private void Start()
