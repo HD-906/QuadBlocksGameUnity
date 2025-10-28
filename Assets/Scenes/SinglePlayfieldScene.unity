@@ -376,7 +376,6 @@ MonoBehaviour:
   holdLocked: 0
   gameOverTriggered: 0
   preview: {fileID: 140510703}
-  fieldOrigin: {fileID: 0}
   cellSize: 1
   level: 1
   fieldStatus: {fileID: 140510704}
@@ -390,7 +389,7 @@ MonoBehaviour:
   lastPieceHarddroped: 1
   started: 0
   garbageHandler: {fileID: 140510705}
-  sticky: 1
+  drillerMode: 0
   ctrlCfg: {fileID: 11400000, guid: 8d10e7853df30044396d59a5cd2ce186, type: 2}
 --- !u!4 &140510702
 Transform:
@@ -1673,7 +1672,7 @@ MonoBehaviour:
   InitSprintLines: 0
   timeValue: 0
   gameManager: {fileID: 140510701}
-  drillingTimerUI: {fileID: 140510708}
+  drillerTimerUI: {fileID: 140510708}
 --- !u!1 &1027188645
 GameObject:
   m_ObjectHideFlags: 0
