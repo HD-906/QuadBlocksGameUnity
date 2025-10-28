@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class AttackEffectHandler : MonoBehaviour
 {
+    // ------------ MultiPlayer only field
     [SerializeField] private GameObject attackEffectRefPoint;
     [SerializeField] private GameObject attackPrefab;
 
+    // ------------ Common field
     [SerializeField] private GameObject comboObj;
     [SerializeField] private GameObject clearTypeObj;
     [SerializeField] private GameObject backToBackObj;

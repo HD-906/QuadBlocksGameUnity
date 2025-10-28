@@ -6,15 +6,11 @@ public class Tetromino : MonoBehaviour
 {
     int orient = 0;
     [SerializeField] private GameObject blockPrefab;
+    [SerializeField] private GameConsts.TetrominoType type;
     private bool rotatedFifthKick = false;
     private bool locking = false;
 
-    public enum TetrominoType
-    {
-        I, O, T, J, L, S, Z
-    }
-
-    public TetrominoType type;
+    public GameConsts.TetrominoType Type => type;
 
     private List<Vector2Int> RotationListA = new() {
         new (0, 0), new (-1, 0), new (-1, 1), new (0, -2), new (-1, -2)
@@ -48,7 +44,7 @@ public class Tetromino : MonoBehaviour
         new (0, 1), new (1, 1), new (-2, 1), new (1, -1), new (-2, 2)
     };
 
-    public GameManager gameManager; 
+    [HideInInspector] public GameManager gameManager; 
 
     public bool CheckGround()
     {
@@ -71,7 +67,7 @@ public class Tetromino : MonoBehaviour
 
     public bool Rotate(int dir)
     {
-        if (type == TetrominoType.O)
+        if (Type == GameConsts.TetrominoType.O)
             return true;
 
         Vector2 originalPosition = transform.position;
@@ -79,7 +75,7 @@ public class Tetromino : MonoBehaviour
         int nextOrient = (orient - dir + 4) % 4;
         List<Vector2Int> selectedList;
 
-        if (type == TetrominoType.I)
+        if (Type == GameConsts.TetrominoType.I)
         {
             if (orient + nextOrient == 3)
             {
@@ -181,7 +177,7 @@ public class Tetromino : MonoBehaviour
         gameManager.lastPieceHarddroped = false;
         locking = true;
         int tSpin = 0;
-        if (type == TetrominoType.T && lastRotated)
+        if (Type == GameConsts.TetrominoType.T && lastRotated)
         {
             tSpin = CheckTspin();
         } // 0, 1, 2 -> No T-spin, T-spin mini, full T-spin

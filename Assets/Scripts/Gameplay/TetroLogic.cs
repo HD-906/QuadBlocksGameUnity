@@ -32,7 +32,7 @@ public class TetroLogic : MonoBehaviour
 
     private bool lastRotated = false;
 
-    public GameManager gameManager;
+    [HideInInspector] public GameManager gameManager;
 
     public enum TetrominoType
     {

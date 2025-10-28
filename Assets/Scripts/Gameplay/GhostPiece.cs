@@ -3,7 +3,7 @@ using UnityEngine;
 public class GhostPiece : MonoBehaviour
 {
     private Tetromino target;
-    public GameManager gameManager;
+    [HideInInspector] public GameManager gameManager;
 
     public void Init(GameManager manager, Tetromino tetromino)
     {

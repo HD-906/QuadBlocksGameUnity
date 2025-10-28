@@ -36,6 +36,11 @@ public static class GameConsts
     public static Color configLabelColorDefault = Color.black;
     public static Color configLabelColorConflicted = Color.red;
 
+    public enum TetrominoType
+    {
+        I, O, T, J, L, S, Z
+    }
+
     [Header("UI data")]
 
     public static Vector3 LeftGarbageUIStart = Vector3.left * 0.75f;

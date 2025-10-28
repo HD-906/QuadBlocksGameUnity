@@ -13,7 +13,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] public Transform[,] grid;
     [SerializeField] public bool gameOverTriggered = false;
     [SerializeField] private PreviewController preview;
-    [SerializeField] Transform fieldOrigin;
     [SerializeField] float cellSize = GameConsts.CellSize;
     [SerializeField] public int level = 1;
     [SerializeField] private InFieldStatus fieldStatus;
@@ -23,6 +22,7 @@ public class GameManager : MonoBehaviour
 
     [HideInInspector] public ModeManager modeManager; // Set in ModeManager.Awake()
     [HideInInspector] public bool is_2P;
+    Transform fieldOrigin;
 
     public static bool gameEnded = false;
     private Vector2Int spawnPosition = GameConsts.SpawnCell;
