@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,7 +12,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject current, onHold;
     [SerializeField] private bool holdLocked = false;
     [SerializeField] public Transform[,] grid;
-    [SerializeField] public bool gameOverTriggered = false;
     [SerializeField] private PreviewController preview;
     [SerializeField] float cellSize = GameConsts.CellSize;
     [SerializeField] public int level = 1;
@@ -24,7 +24,10 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public bool is_2P;
     Transform fieldOrigin;
 
+    private bool gameEndingBuffer = false;
+    private System.Action gameEndingAction;
     public static bool gameEnded = false;
+    public bool gameOverTriggered = false;
     private Vector2Int spawnPosition = GameConsts.SpawnCell;
 
     public const int gridWidth = GameConsts.GridWidth, gridHeight = GameConsts.GridHeight;
@@ -210,9 +213,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void SpawnNextTetromino()
+    public void SpawnNextTetromino(bool skipGameEndingBuffer = false)
     {
         holdLocked = false;
+
+        if (gameEndingBuffer && !skipGameEndingBuffer)
+        {
+            gameEndingBuffer = false;
+            Interlocked.Exchange(ref gameEndingAction, null)?.Invoke();
+            return;
+        }
 
         if (gameEnded)
             return;
@@ -238,7 +248,7 @@ public class GameManager : MonoBehaviour
         if (onHold == null)
         {
             onHold = current;
-            SpawnNextTetromino();
+            SpawnNextTetromino(skipGameEndingBuffer: true);
         }
         else
         {
@@ -417,6 +427,12 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0f;
         gameOverTriggered = true;
         gameEnded = true;
+    }
+
+    public void GameClearedDelayed() // shows score after locking current
+    {
+        gameEndingBuffer = true;
+        gameEndingAction = GameCleared;
     }
 
     public void RestartGame()

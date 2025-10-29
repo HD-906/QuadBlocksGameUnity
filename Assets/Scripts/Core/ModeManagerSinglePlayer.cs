@@ -116,7 +116,8 @@ public class ModeManagerSinglePlayer : ModeManager
         condition.text = $"Level {condValue}\n{TimeToString()}";
         if (timeValue <= 0)
         {
-            gameManager.GameCleared();
+            gameManager.GameClearedDelayed();
+            return;
         }
 
         int increment = (currentLevel <= 10) ? 0 : 1;
